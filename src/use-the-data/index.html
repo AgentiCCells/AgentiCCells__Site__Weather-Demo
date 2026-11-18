@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Use the data | Weather, from our data</title>
+<meta name="description" content="How to use the raw weather data behind this site: the data.promptugal.news addresses, copy-paste examples in curl and JavaScript, how to read a source card and its terms, how to tell stale data, and a minimal page you can build yourself.">
+<meta name="share-image" content="/assets/share/use-the-data.png">
+<!--HEAD-->
+<style>
+pre{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:.8rem 1rem;overflow-x:auto;font-family:var(--mono);font-size:.84rem;line-height:1.45;max-width:100%}
+pre code{font-size:inherit;overflow-wrap:normal}
+code{font-family:var(--mono);font-size:.88em;overflow-wrap:anywhere}
+.ex h3{margin-top:1.6rem}
+.ex .lab{font-size:.85rem;color:var(--muted);margin:.6rem 0 .2rem;font-weight:600}
+.fields dt{font-weight:600;margin-top:.6rem}
+.fields dd{margin:.1rem 0 0 1rem}
+.toc{columns:2 16rem;font-size:.95rem}
+td code{overflow-wrap:normal;white-space:nowrap}
+</style>
+</head>
+<body>
+<!--HEADER-->
+<main id="main" class="wrap">
+<h1>Use the data</h1>
+<p class="lede">Every figure on this site comes from plain JSON files that anyone can read: no key, no account, no sign-up. This page shows where they are, how to read them with curl or a few lines of JavaScript, what the terms let you do, and how to build a page like this one yourself.</p>
+
+<nav aria-label="On this page">
+<ul class="toc">
+<li><a href="#what">What data.promptugal.news is</a></li>
+<li><a href="#addresses">The addresses</a></li>
+<li><a href="#examples">Examples you can copy</a></li>
+<li><a href="#card">How to read a card</a></li>
+<li><a href="#terms">The terms</a></li>
+<li><a href="#stale">Stale data: check the time</a></li>
+<li><a href="#build">Build a page like this one</a></li>
+<li><a href="#sources">Where these facts come from</a></li>
+</ul>
+</nav>
+
+<h2 id="what">What data.promptugal.news is</h2>
+<p>data.promptugal.news is, in its own words, "the raw public data behind every PrompTugal site", "collected by code, served as plain JSON files". It is run by PrompTugal.news, not by IPMA and not by this site. A small program per source (a collector, with no AI model in it) reads the publisher's own feed, for example IPMA's open data at api.ipma.pt, and the data site serves what it read as three files per source. GitHub Actions runs the collectors on a schedule, at 17 minutes past each hour for the hourly sources, and on every push to the data site's repository.</p>
+<ul>
+<li><strong>Open.</strong> Every file is a GET with no key. The server sends <code>access-control-allow-origin: *</code>, so a page on any website can read the files from the visitor's browser. It also sends <code>cache-control: max-age=600</code>, so a browser may keep a copy for up to 10 minutes.</li>
+<li><strong>Stable.</strong> Its contract (<a href="https://data.promptugal.news/api/v1/README.md">api/v1/README.md</a>) says the v1 addresses and fields stay for the life of v1: fields may be added, none removed or renamed. A breaking change would go to <code>api/v2/</code>, with v1 kept alongside.</li>
+<li><strong>Sourced.</strong> Every <code>latest.json</code> carries a <code>provenance</code> block: the publisher's address that was read, the UTC time it was read, the collector that read it and the publisher's terms.</li>
+<li><strong>Not a warning service.</strong> The data site says so itself: for warnings, follow IPMA and ANEPC.</li>
+</ul>
+
+<h2 id="addresses">The addresses</h2>
+<p>Everything sits under <code>https://data.promptugal.news/api/v1/</code>.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th scope="col">Address</th><th scope="col">What it holds</th></tr></thead>
+<tbody>
+<tr><td><a href="https://data.promptugal.news/llms.txt"><code>/llms.txt</code></a></td><td>The data site in one text file: every source, its files and its terms. A good first read for a person or an AI agent.</td></tr>
+<tr><td><a href="https://data.promptugal.news/api/v1/index.json"><code>api/v1/index.json</code></a></td><td>The catalogue: every source with <code>id</code>, <code>title</code>, <code>publisher</code>, <code>cadence</code>, <code>read_at</code>, the addresses of its files and a <code>terms_summary</code>.</td></tr>
+<tr><td><a href="https://data.promptugal.news/api/v1/openapi.json"><code>api/v1/openapi.json</code></a></td><td>An OpenAPI 3.1 description of every path, with schemas and examples. There is also an <a href="https://data.promptugal.news/api/swagger/">API explorer</a>.</td></tr>
+<tr><td><code>api/v1/&lt;source&gt;/latest.json</code></td><td>The records from the collector's last good read, with <code>read_at</code> and <code>provenance</code>.</td></tr>
+<tr><td><code>api/v1/&lt;source&gt;/reads.json</code></td><td>A log of the collector's runs, newest first: when each ran, the HTTP status, the size, the start of a checksum, and whether the bytes changed. It logs runs, not values.</td></tr>
+<tr><td><code>api/v1/&lt;source&gt;/card.json</code></td><td>The source card: who publishes the data, the terms, the schedule, the vault copy, who made the collector and what a run costs.</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>The weather sources this site reads</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th scope="col">Source id</th><th scope="col">What</th><th scope="col">Publisher (from the card)</th><th scope="col">Cadence</th><th scope="col">On this site</th></tr></thead>
+<tbody>
+<tr><td><code>ipma-warnings</code></td><td>Weather warnings for every warning area: yellow, orange and red in full, green counted</td><td>IPMA</td><td>hourly</td><td><a href="/warnings/">Warnings</a></td></tr>
+<tr><td><code>ipma-city-forecasts</code></td><td>Five-day forecasts for each district capital and island, and Loulé, Portimão and Sagres</td><td>IPMA</td><td>hourly</td><td><a href="/forecasts/">Forecasts</a></td></tr>
+<tr><td><code>ipma-observations</code></td><td>The latest hourly reading of each surface station</td><td>IPMA</td><td>hourly</td><td><a href="/observations/">Stations</a></td></tr>
+<tr><td><code>ipma-fire-risk</code></td><td>Fire risk class (RCM) per mainland municipality, today and the next two days</td><td>IPMA</td><td>hourly</td><td><a href="/fire-risk/">Fire risk</a></td></tr>
+<tr><td><code>ipma-sea</code></td><td>Wave height, period and direction, and sea temperature, per coastal place</td><td>IPMA</td><td>hourly</td><td><a href="/sea/">Sea</a></td></tr>
+<tr><td><code>ipma-uv</code></td><td>UV index forecast by place and day</td><td>IPMA</td><td>hourly</td><td><a href="/uv/">UV</a></td></tr>
+<tr><td><code>meteoalarm-pt</code></td><td>Every CAP warning message in MeteoAlarm's Portugal feed, one line each</td><td>MeteoAlarm (EUMETNET), from IPMA</td><td>hourly</td><td><a href="/warnings/">Warnings</a></td></tr>
+<tr><td><code>storm-charles-archive</code></td><td>The data files behind storm-charles.promptugal.news, 10 to 12 November 2026, each with its size and checksum</td><td>storm-charles.promptugal.news</td><td>once</td><td><a href="/storm-charles/">Storm Charles</a></td></tr>
+</tbody>
+</table>
+</div>
+<p class="note">The catalogue lists other sources too (flights around Faro, public contracts, events, social posts by link). This site uses only the weather ones. For the Algarve places, <code>api/v1/by-place/now/&lt;place&gt;.json</code> combines several sources for one place; this site's <a href="/place/">place view</a> does its own combining, for every place, from the files above.</p>
+
+<h2 id="examples">Examples you can copy</h2>
+<p>Each example was run on 18 November 2026 at about 16:30 UTC and worked as shown. The curl examples use <a href="https://jqlang.org/">jq</a> to pick out fields. The JavaScript examples use <code>fetch</code>: paste one into your browser's developer console on a blank tab or most web pages (the console accepts <code>await</code> at the top level), or put it in a <code>&lt;script type="module"&gt;</code>. The output changes every hour.</p>
+
+<div class="ex">
+<h3>1. List the sources</h3>
+<p class="lab">curl</p>
+<pre><code>curl -s https://data.promptugal.news/api/v1/index.json \
+  | jq -r '.sources[] | "\(.id)\t\(.cadence)\t\(.read_at)"'</code></pre>
+<p class="lab">JavaScript</p>
+<pre><code>const r = await fetch('https://data.promptugal.news/api/v1/index.json');
+const index = await r.json();
+for (const s of index.sources) console.log(s.id, s.cadence, s.read_at);</code></pre>
+
+<h3>2. The latest warnings</h3>
+<p>Each record in <code>active</code> has <code>area</code>, <code>area_name</code>, <code>type</code> (in English; <code>type_pt</code> as IPMA writes it), <code>level</code>, <code>start</code>, <code>end</code> and IPMA's <code>text</code>. Times are as IPMA gives them, Portugal local time. <code>counts</code> gives the number active, by level, and the number of green (no warning) entries.</p>
+<p class="lab">curl</p>
+<pre><code>curl -s https://data.promptugal.news/api/v1/ipma-warnings/latest.json \
+  | jq -r '"read at \(.read_at)",
+           (.active[] | "\(.level)\t\(.area_name)\t\(.type)\t\(.start) to \(.end)")'</code></pre>
+<p class="lab">JavaScript</p>
+<pre><code>const r = await fetch('https://data.promptugal.news/api/v1/ipma-warnings/latest.json');
+const w = await r.json();
+console.log(`read at ${w.read_at}: ${w.counts.active} active warnings`);
+for (const a of w.active) console.log(a.level, a.area_name, a.type, a.start, a.end);</code></pre>
+
+<h3>3. The forecast for one place</h3>
+<p>Places are keyed by IPMA's <code>globalIdLocal</code>, which the file calls <code>id</code>: 1080500 is Faro, 1110600 Lisboa, 1131200 Porto. Each place has its own <code>read_at</code> and five <code>days</code>, with <code>t_min_c</code>, <code>t_max_c</code>, <code>rain_prob_pct</code>, IPMA's <code>weather_type</code> code, <code>wind_dir</code>, and IPMA's wind and rain classes. To list every id:</p>
+<pre><code>curl -s https://data.promptugal.news/api/v1/ipma-city-forecasts/latest.json \
+  | jq -r '.cities[] | "\(.id)\t\(.name)"'</code></pre>
+<p class="lab">curl</p>
+<pre><code>curl -s https://data.promptugal.news/api/v1/ipma-city-forecasts/latest.json \
+  | jq '.cities[] | select(.id == 1080500)
+        | {name, read_at, days: [.days[] | {date, t_min_c, t_max_c, rain_prob_pct}]}'</code></pre>
+<p class="lab">JavaScript</p>
+<pre><code>const r = await fetch('https://data.promptugal.news/api/v1/ipma-city-forecasts/latest.json');
+const f = await r.json();
+const place = f.cities.find(c =&gt; c.id === 1080500); // IPMA's globalIdLocal for Faro
+console.log(place.name, 'read at', place.read_at);
+console.table(place.days.map(d =&gt; ({ date: d.date, min: d.t_min_c, max: d.t_max_c, rain: d.rain_prob_pct })));</code></pre>
+
+<h3>4. The nearest station to a point</h3>
+<p>Each station has <code>lat</code>, <code>lon</code> and a <code>reading</code> (temperature, humidity, wind, rain, pressure, radiation) for the hour in <code>hour_utc</code>. A station that sent nothing that hour has <code>reading: null</code>, so skip it. The point below is Faro (37.0194, -7.9304); the answer we saw was Faro (Aeródromo), 3.7 km away. The jq version uses a flat-earth distance, close enough over tens of kilometres; the JavaScript version uses the great-circle distance.</p>
+<p class="lab">curl</p>
+<pre><code>curl -s https://data.promptugal.news/api/v1/ipma-observations/latest.json \
+  | jq --argjson lat 37.0194 --argjson lon -7.9304 '
+      .hour_utc as $h
+      | [.stations[] | select(.reading != null)
+         | . + {d: ((((.lat - $lat) * 111.2) | . * .)
+                  + (((.lon - $lon) * 111.2 * ($lat * 0.017453 | cos)) | . * .) | sqrt)}]
+      | min_by(.d)
+      | {name, km: (.d * 10 | round / 10), hour_utc: $h, reading}'</code></pre>
+<p class="lab">JavaScript</p>
+<pre><code>const r = await fetch('https://data.promptugal.news/api/v1/ipma-observations/latest.json');
+const o = await r.json();
+const km = (lat1, lon1, lat2, lon2) =&gt; { // great-circle distance
+  const k = Math.PI / 180;
+  const a = Math.sin((lat2 - lat1) * k / 2) ** 2
+    + Math.cos(lat1 * k) * Math.cos(lat2 * k) * Math.sin((lon2 - lon1) * k / 2) ** 2;
+  return 12742 * Math.asin(Math.sqrt(a));
+};
+const here = { lat: 37.0194, lon: -7.9304 }; // Faro
+const near = o.stations.filter(s =&gt; s.reading)
+  .map(s =&gt; ({ ...s, km: km(here.lat, here.lon, s.lat, s.lon) }))
+  .sort((a, b) =&gt; a.km - b.km)[0];
+console.log(near.name, near.km.toFixed(1), 'km away; hour (UTC):', o.hour_utc, near.reading);</code></pre>
+
+<h3>5. Read a card</h3>
+<p class="lab">curl</p>
+<pre><code>curl -s https://data.promptugal.news/api/v1/ipma-warnings/card.json \
+  | jq '{title, publisher, cadence: .schedule.cadence, terms: .terms.summary,
+         terms_page: .terms.page, terms_read: .terms.read_at, since}'</code></pre>
+<p class="lab">JavaScript</p>
+<pre><code>const r = await fetch('https://data.promptugal.news/api/v1/ipma-warnings/card.json');
+const card = await r.json();
+console.log(card.publisher);
+console.log(card.schedule.cadence, '|', card.terms.summary);
+console.log('terms page:', card.terms.page, '| terms read on', card.terms.read_at);</code></pre>
+
+<h3>6. When did the collector last run?</h3>
+<p><code>reads.json</code> shows each run: its time, how many reads succeeded and how many failed.</p>
+<pre><code>curl -s https://data.promptugal.news/api/v1/ipma-warnings/reads.json \
+  | jq -r '.runs[0:5][] | "\(.at)\tok \(.ok)\tfailed \(.failed)"'</code></pre>
+</div>
+
+<h2 id="card">How to read a card</h2>
+<p>Read a source's <code>card.json</code> before you reuse its data. These are the fields that matter, with what the ipma-warnings card held when we read it:</p>
+<dl class="fields">
+<dt><code>publisher</code></dt><dd>Who publishes the data: "IPMA, Instituto Português do Mar e da Atmosfera". Name them beside every figure.</dd>
+<dt><code>source_home</code> and <code>reader_page</code></dt><dd>The publisher's own file that the collector reads (here IPMA's <code>warnings_www.json</code>), and the publisher's page for people. Link the reader page so your visitors can check the original.</dd>
+<dt><code>terms.summary</code>, <code>terms.quote</code>, <code>terms.page</code>, <code>terms.read_at</code></dt><dd>The reuse terms in one line, the publisher's own words where the card has them (for IPMA, in Portuguese), the page they come from and the date they were read. <code>terms.republish</code> says in short whether you may republish and on what conditions. Some cards add an <code>open_question</code> that is not settled yet.</dd>
+<dt><code>schedule.cadence</code> and <code>schedule.how</code></dt><dd>How often the collector is meant to run ("hourly", or "once" for the archive) and what runs it. This is the plan; <code>reads.json</code> is what happened.</dd>
+<dt><code>api</code></dt><dd>The addresses of this source's <code>latest</code>, <code>reads</code>, <code>card</code> and <code>openapi</code> files, and its page on the data site.</dd>
+<dt><code>since</code>, <code>split</code>, <code>cost</code></dt><dd>When collection started (17 November 2026 for the IPMA sources), what code, agents and people did (the cards say no person has checked the values yet), and what a run costs (no AI model is called when collecting, so 0 tokens).</dd>
+<dt><code>license</code></dt><dd>The licence of the card itself and of what PrompTugal.news makes (CC BY 4.0). It is not the licence of the publisher's data: that is in <code>terms</code>.</dd>
+</dl>
+<p>The read times are not in the card but in the data: <code>read_at</code> at the top of each <code>latest.json</code> (the collector's last good read), the same time in <code>provenance.read_at</code>, and, in the forecasts file, one <code>read_at</code> per place. The card's <code>vault</code> block says where the bytes as received are kept (an sgit vault, with a dated copy when they change); this page does not repeat its read key.</p>
+
+<h2 id="terms">The terms</h2>
+<p>The terms belong to the publishers, not to PrompTugal.news or to us, and the data site says they are "not ours to relax". As the cards give them on 18 November 2026:</p>
+<ul>
+<li><strong>IPMA</strong> (the six ipma-* sources): "free to copy and use for personal or public use if the use has no profit-making or offensive purpose; always name IPMA as the source." So: no profit-making use (no ads, payments or paid products built on it under these terms), no offensive use, and name IPMA every time. IPMA's own words, as the card quotes them from <a href="https://api.ipma.pt/">api.ipma.pt</a>: "O Utilizador pode copiar, importar ou utilizar gratuitamente informações ou símbolos nacionais existentes neste site para uso pessoal ou público desde que dessa utilização não decorram finalidades lucrativas ou ofensivas. O Utilizador deve referir, sempre, a fonte de informação."</li>
+<li><strong>MeteoAlarm</strong> (meteoalarm-pt): "re-users must name the national service (IPMA), keep the time of issue, link www.meteoalarm.org and publish MeteoAlarm's disclaimer." The file's <code>attribution</code> block carries all four: the national service, the link, and the disclaimer text; each message's <code>sent_utc</code> is its time of issue. The card says these terms were read on 11 November 2026 and not re-read since; its terms page is <a href="https://www.meteoalarm.org/en/live/page/terms-and-conditions">meteoalarm.org's terms and conditions</a>.
+<pre><code>curl -s https://data.promptugal.news/api/v1/meteoalarm-pt/latest.json \
+  | jq '{read_at, attribution, first: (.messages[0] | {sent_utc})}'</code></pre></li>
+<li><strong>The Storm Charles archive</strong>: "The storm site's own data: Apache-2.0 (its repository's licence). Quoted sources keep their own terms; each item links its source."</li>
+</ul>
+<p>This site follows them by having no ads, payments or tracking, by naming the publisher beside every figure with the time read, and by showing MeteoAlarm's disclaimer wherever it shows a MeteoAlarm message.</p>
+
+<h2 id="stale">Stale data: check the time</h2>
+<p>A file can be hours behind the publisher. The cards say "hourly", but the collectors do not always run: in the ipma-warnings run log (<code>reads.json</code>, read 18 November 2026 at 16:22 UTC) the longest gap between runs was 7 hours 15 minutes, from 02:28 to 09:43 UTC that day, and two others were over 3 hours. When a read fails, the last good file stays and <code>reads.json</code> records the failure, so a file never disappears; it just gets older.</p>
+<p>So compare <code>read_at</code> with the time now, every time, and say it beside the figures. This site calls a file stale past 3 hours and old past 24 hours, and says so on the page; those limits are our choice, not IPMA's. A page that shows a figure without its age can mislead.</p>
+<p class="lab">curl</p>
+<pre><code>curl -s https://data.promptugal.news/api/v1/ipma-warnings/latest.json \
+  | jq -r '.read_at as $r | (now - ($r | fromdateiso8601)) / 3600
+           | "read \($r), \(. * 10 | floor / 10) hours ago"
+             + (if . &gt; 3 then ": stale, say so beside the figures" else "" end)'</code></pre>
+<p class="lab">JavaScript</p>
+<pre><code>const r = await fetch('https://data.promptugal.news/api/v1/ipma-warnings/latest.json');
+const w = await r.json();
+const hours = (Date.now() - Date.parse(w.read_at)) / 36e5;
+console.log(hours &gt; 3
+  ? `Stale: this file was read ${hours.toFixed(1)} hours ago`
+  : `Read ${Math.round(hours * 60)} minutes ago`);</code></pre>
+
+<h2 id="build">Build a page like this one</h2>
+<p>This site is static HTML, CSS and a few small scripts. No server of ours holds the data: each page fetches the files when you open it. You can do the same with one file:</p>
+<ol>
+<li>A static HTML page, on any host (or opened from your disk).</li>
+<li>A <code>fetch</code> of the source's <code>latest.json</code> and <code>card.json</code>.</li>
+<li>The figures, with the card's publisher and terms beside them, and the read time.</li>
+<li>A plain message when the file is stale, and another when it cannot be read. Never a guess.</li>
+<li>The line every page of ours carries: "Not a warning service. For warnings and safety, follow IPMA (ipma.pt) and ANEPC."</li>
+</ol>
+<p>Here is a complete page that lists the current warnings. Save it as <code>warnings.html</code> and open it in a browser. It is 47 lines, uses no library, and we ran it on 18 November 2026: it listed 32 active warnings, with IPMA's terms below them, and showed the stale and error messages when we tested those cases.</p>
+<pre><code>&lt;!doctype html&gt;
+&lt;html lang="en-GB"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;
+&lt;title&gt;Warnings now&lt;/title&gt;
+&lt;style&gt;
+body{font:16px/1.5 system-ui,sans-serif;max-width:40rem;margin:2rem auto;padding:0 16px}
+.stale{background:#fff4d6;color:#3b2f00;padding:.5rem}
+small{color:#555}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Weather warnings in Portugal&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Not a warning service. For warnings and safety, follow IPMA (ipma.pt) and ANEPC.&lt;/strong&gt;&lt;/p&gt;
+&lt;p id="status"&gt;Reading the file...&lt;/p&gt;
+&lt;ul id="list"&gt;&lt;/ul&gt;
+&lt;p&gt;&lt;small id="credit"&gt;&lt;/small&gt;&lt;/p&gt;
+&lt;script type="module"&gt;
+const API = 'https://data.promptugal.news/api/v1/ipma-warnings';
+const $ = id =&gt; document.getElementById(id);
+const get = async url =&gt; {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
+  return r.json();
+};
+try {
+  const [latest, card] = await Promise.all([get(`${API}/latest.json`), get(`${API}/card.json`)]);
+  const hours = (Date.now() - Date.parse(latest.read_at)) / 36e5;
+  const when = new Date(latest.read_at).toLocaleString('en-GB', { timeZone: 'Europe/Lisbon' });
+  $('status').textContent = `${latest.counts.active} active warnings. File read ${when}, Lisbon time.`;
+  if (hours &gt; 3) {
+    $('status').className = 'stale';
+    $('status').textContent += ` This is ${hours.toFixed(1)} hours old: check ipma.pt for now.`;
+  }
+  for (const w of latest.active) {
+    const li = document.createElement('li');
+    li.textContent = `${w.area_name}: ${w.level}, ${w.type}, ${w.start} to ${w.end} (local time)`;
+    $('list').append(li);
+  }
+  $('credit').textContent = `Source: ${card.publisher}, read by data.promptugal.news. ${card.terms.summary}`;
+} catch (e) {
+  $('status').textContent = `Could not read the warnings (${e.message}). See ipma.pt.`;
+}
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>From there, the same pattern draws anything in the catalogue: change the source id and the fields. The pages of this site add a timeout, a "slow" message after 4 seconds and charts in SVG, but the idea is the same. Their code is open: <a href="https://github.com/AgentiCCells/AgentiCCells__Site__Weather-Demo">AgentiCCells__Site__Weather-Demo</a> (code Apache-2.0).</p>
+
+<div class="prov" id="sources">
+<p>Facts on this page from: <a href="https://data.promptugal.news/llms.txt">data.promptugal.news/llms.txt</a>, <a href="https://data.promptugal.news/api/v1/README.md">api/v1/README.md</a>, <a href="https://data.promptugal.news/api/v1/index.json">api/v1/index.json</a>, the cards of <a href="https://data.promptugal.news/api/v1/ipma-warnings/card.json">ipma-warnings</a>, <a href="https://data.promptugal.news/api/v1/meteoalarm-pt/card.json">meteoalarm-pt</a> and <a href="https://data.promptugal.news/api/v1/storm-charles-archive/card.json">storm-charles-archive</a>, and <a href="https://data.promptugal.news/api/v1/ipma-warnings/reads.json">ipma-warnings/reads.json</a>, all read on 18 November 2026 between 16:21 and 16:35 UTC. The response headers were read with curl at the same time.</p>
+</div>
+</main>
+<!--FOOTER-->
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Storm Charles, archived | Weather, from our data</title>
+<meta name="description" content="What the storm-charles-archive source on data.promptugal.news holds: the 142 data files behind storm-charles.promptugal.news for Storm Charles, 10 to 12 November 2026, archived once on 17 November with a checksum for each. An archived event, not current weather.">
+<meta name="share-image" content="/assets/share/storm-charles.png">
+<!--HEAD-->
+<style>
+code{font-family:var(--mono);font-size:.88em;overflow-wrap:anywhere}
+.archived{max-width:52rem}
+</style>
+</head>
+<body data-sources="storm-charles-archive">
+<!--HEADER-->
+<main id="main" class="wrap">
+<h1>Storm Charles, archived</h1>
+<p class="status warn archived" role="note"><strong>An archived event, not current weather.</strong> The archive covers Storm Charles in Lisbon and Madeira, 10 to 12 November 2026. Nothing on this page describes today. For today, see <a href="/">the home page</a> and, above all, <a href="https://www.ipma.pt">ipma.pt</a>.</p>
+<p class="lede">During the storm, a team of incident agents ran a site, storm-charles.promptugal.news, that collected decisions, weather, flights and transport for Lisbon and Madeira. data.promptugal.news keeps a second copy of its data files, as a source called <code>storm-charles-archive</code>. This page says what that archive holds, and reads it live.</p>
+
+<h2>What the archive is</h2>
+<ul>
+<li><strong>What.</strong> In the words of its card: "The data files behind storm-charles.promptugal.news (Lisbon and Madeira, 10 to 12 November 2026): decisions, exposure, flights, transport, weather and the signal timeline, every file with its size and sha256, checked against the bytes served."</li>
+<li><strong>Who made the files.</strong> The card names the publisher as "storm-charles.promptugal.news (the Storm Charles incident team)": the incident agents made the files from 10 to 12 November 2026. PrompTugal.news's data agent wrote the collector that archived them. The card says no person has checked the values.</li>
+<li><strong>When it was read.</strong> Once, on 17 November 2026 at 19:27:57 UTC (<code>read_at</code>), from the storm site's catalogue (<code>api/v1/index.json</code>). That catalogue was version v0.1.2018, built on 13 November 2026 at 15:44 UTC. The card's cadence is "once": the storm is over, and nothing re-reads it.</li>
+<li><strong>How much.</strong> 142 files in 39 datasets, 5,127,487 bytes in all (about 5.1 MB). All 142 answered HTTP 200, and all 142 are marked verified: the checksum of the bytes received matched the one the storm site's catalogue gave.</li>
+<li><strong>One incident.</strong> The catalogue lists one incident, <code>2026-11-10-storm-charles</code>, titled "Storm Charles, Lisbon: Wednesday 11 November 2026". Its last headline, as archived, came from Web Summit's own channel on 12 November at 09:23 UTC: the organisers said Thursday, the event's third day, was running and that Wednesday had been cancelled.</li>
+</ul>
+
+<h2>What is in it</h2>
+<div class="table-wrap">
+<table>
+<caption>The archive's datasets, grouped by the first part of their name. Counts and sizes from <code>latest.json</code>, read 18 November 2026 at 16:22 UTC.</caption>
+<thead><tr><th scope="col">Group</th><th scope="col" class="num">Datasets</th><th scope="col" class="num">Files</th><th scope="col" class="num">Bytes</th><th scope="col">What the file notes say it holds</th></tr></thead>
+<tbody>
+<tr><td>weather</td><td class="num">12</td><td class="num">12</td><td class="num">796,181</td><td>IPMA's warnings for the Lisbon district and how they changed, IPMA's warnings as CAP messages through MeteoAlarm, IPMA's communiqués, forecasts, hourly station observations in Lisbon and in Madeira, Lisbon's rain, aeronautical forecasts and observations for Lisbon and Madeira airports, and observed wind against the forecast</td></tr>
+<tr><td>flights</td><td class="num">6</td><td class="num">91</td><td class="num">3,557,635</td><td>Airline aircraft seen around Lisbon and Madeira by adsb.lol's community receivers, the wind the airports reported on each runway with the departures each hour, wind fields from Open-Meteo, and two-sentence summaries written by an open-weight AI model and kept only when every number matched its input</td></tr>
+<tr><td>transport</td><td class="num">8</td><td class="num">8</td><td class="num">79,799</td><td>Bridges, buses, ferries, flights at Lisbon, Porto, Faro and Funchal (counts only), the metro and its timetable, trains and other services, each from the operator's own channel where it published one</td></tr>
+<tr><td>decisions</td><td class="num">4</td><td class="num">22</td><td class="num">255,728</td><td>A graph of who decided what and what each decision followed, each with a label (fact, evidence or hypothesis), a source and a read time; the decisions about the airport; the sources used and the addresses behind the timeline</td></tr>
+<tr><td>exposure</td><td class="num">7</td><td class="num">7</td><td class="num">209,672</td><td>Residents by warning area from the 2021 Census, people by hour, hospitals mapped in OpenStreetMap, Lisbon in 2 km squares and its 18 metropolitan municipalities with their low-lying land, where each of 51 ECMWF ensemble forecasts put the storm's centre, and modelled tides at Cascais, the Tagus and Funchal</td></tr>
+<tr><td>signals</td><td class="num">1</td><td class="num">1</td><td class="num">161,170</td><td>The incident's timeline as data</td></tr>
+<tr><td>watch</td><td class="num">1</td><td class="num">1</td><td class="num">67,302</td><td>Web Summit's own channels, watched for its decisions</td></tr>
+</tbody>
+</table>
+</div>
+<p class="note">The descriptions are short summaries of each file's own <code>about</code> note in the archive. Several files carry their own caveats there: the hospital map is "a map of buildings, not a statement that any is open"; the tides are "a model", not the official tide table; the census counts "where people sleep, not where they are at a given hour". Read a file's note before you use it.</p>
+
+<h2>The archive, read live</h2>
+<p>The figure below is drawn in your browser from <a href="https://data.promptugal.news/api/v1/storm-charles-archive/latest.json">storm-charles-archive/latest.json</a> and its <a href="https://data.promptugal.news/api/v1/storm-charles-archive/card.json">card</a>. If the file cannot be read, it says so.</p>
+<div id="storm-live" data-source="storm-charles-archive"></div>
+
+<h2>The terms</h2>
+<p>From the card: "The storm site's own data: Apache-2.0 (its repository's licence). Quoted sources keep their own terms; each item links its source." So the storm site's own files may be reused under Apache-2.0, but anything they quote, IPMA's warnings among them, stays under its own source's terms: for IPMA, no profit-making or offensive use, and always name IPMA.</p>
+
+<h2>Where to read more</h2>
+<ul>
+<li>The storm site itself, <a href="https://storm-charles.promptugal.news/">storm-charles.promptugal.news</a>, and its <a href="https://storm-charles.promptugal.news/datasets.html">list of datasets</a>. It keeps its own addresses; the archive is a second, checked copy.</li>
+<li>The archive's page on the data site: <a href="https://data.promptugal.news/sources/storm-charles-archive/">data.promptugal.news/sources/storm-charles-archive/</a>.</li>
+<li>PrompTugal.news's own account of the storm in Lisbon, <a href="https://promptugal.news/storm/charles/">promptugal.news/storm/charles/</a>, with a source and read time for every line. Its text and data are CC BY 4.0. This page does not summarise it.</li>
+</ul>
+<p>To fetch the archive yourself, see <a href="/use-the-data/">Use the data</a>.</p>
+
+<div class="prov">
+<p>Facts on this page from <a href="https://data.promptugal.news/api/v1/storm-charles-archive/latest.json">storm-charles-archive/latest.json</a> and <a href="https://data.promptugal.news/api/v1/storm-charles-archive/card.json">card.json</a>, read 18 November 2026 at 16:22 UTC (the archive itself was read on 17 November 2026 at 19:27:57 UTC), and data.promptugal.news's <a href="https://data.promptugal.news/llms.txt">llms.txt</a>, read at 16:21 UTC. The licence of PrompTugal.news's storm page from its Markdown version, read at 16:40 UTC. Nothing here comes from elsewhere.</p>
+</div>
+</main>
+<!--FOOTER-->
+</body>
+</html>
