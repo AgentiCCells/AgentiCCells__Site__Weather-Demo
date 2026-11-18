@@ -123,7 +123,8 @@ async function main() {
       ? h('span', { class: 'fc-htrack fc-sumbar', style: `--steps:${steps}`, 'aria-hidden': 'true' }, h('i', { class: 'fc-hbar', style: `left:${Math.min(pct(d0.t_min_c), pct(d0.t_max_c))}%;width:${Math.abs(pct(d0.t_max_c) - pct(d0.t_min_c))}%` })) : null;
     return h('details', { class: 'fc-card fc-fold', open: !narrow.matches, 'data-id': String(c.id) },
       h('summary', {}, h('h4', {}, c.name), h('span', { class: 'fc-sumtxt' }, sumTxt), bar0,
-        h('span', { class: 'fc-times fc-area', style: 'margin:0' }, AREAS[c.area] ? `area ${AREAS[c.area].name}` : (c.area ? `area ${c.area}` : ''))),
+        // The separator is read out but not drawn: at 600 px and up the area sits on its own line (review S6).
+        AREAS[c.area] || c.area ? h('span', { class: 'fc-times fc-area', style: 'margin:0' }, h('span', { class: 'cb-vh' }, ' · '), AREAS[c.area] ? `area ${AREAS[c.area].name}` : `area ${c.area}`) : null),
       town ? h('p', { class: 'fc-placelink' }, h('a', { href: `/place/?id=${town.id}` }, `Everything for ${c.name} in Your town`)) : null,
       h('p', { class: 'fc-times' }, `Read ${c.read_at ? fmtUTCsec(c.read_at) : 'unknown'} · IPMA update ${c.updated ? fmtUTC(updatedMs(c.updated)).replace(/ \d{4},/, ',') : 'not given'}`),
       h('p', { class: 'cb-vh' }, label),

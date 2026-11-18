@@ -147,10 +147,10 @@ function sortableTable(stations, caption, near = new Map()) {
     }))));
   };
   render();
-  const colsBtn = h('button', { type: 'button', class: 'cb-btn obs-cols', 'aria-pressed': 'false', onclick: () => {
+  // The label says what the button will do, so it carries no aria-pressed (review S4).
+  const colsBtn = h('button', { type: 'button', class: 'cb-btn obs-cols', onclick: () => {
     const on = !wrap.classList.contains('all-cols');
     wrap.classList.toggle('all-cols', on);
-    colsBtn.setAttribute('aria-pressed', String(on));
     colsBtn.textContent = on ? 'Show 4 columns' : `Show all ${COLS.length} columns`;
   } }, `Show all ${COLS.length} columns`);
   const more = stations.length - FIRST;
@@ -168,7 +168,9 @@ function silentFold(list, hour, near) {
   if (!list.length) return null;
   const names = list.slice().sort((a, b) => String(a.name).localeCompare(String(b.name), 'pt')).flatMap((p, i) => {
     const towns = near.get(p) || [];
-    return [i ? ', ' : '', p.name ?? 'unnamed', towns.length ? [' (nearest to ', towns.flatMap((t, k) => [k ? ', ' : '', h('a', { href: `/place/?id=${t.p.id}` }, t.p.name)]), ')'] : ''];
+    // h() flattens one level only, so every item here must be a node or a string (no nested arrays).
+    const links = towns.flatMap((t, k) => [k ? ', ' : '', h('a', { href: `/place/?id=${t.p.id}` }, t.p.name)]);
+    return [i ? ', ' : '', p.name ?? 'unnamed', ...(towns.length ? [' (nearest to ', ...links, ')'] : [])];
   });
   return h('details', { class: 'fold obs-silent' }, h('summary', {}, `${list.length} station${list.length === 1 ? '' : 's'} sent nothing for ${hour}`),
     h('p', {}, names, '.'));

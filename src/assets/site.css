@@ -283,6 +283,8 @@ details.fold>summary .muted{font-weight:400}
 .pc-strip li{border:1px solid var(--line);border-radius:6px;padding:.35rem .4rem;display:flex;flex-direction:column;gap:.2rem;font-size:.9rem;min-width:0}
 .pc-strip .pc-win{font-size:.78rem;color:var(--muted)}
 .pc-strip .lvl{white-space:normal}
+/* Narrow cells (phones): the swatch above the word, so "Yellow" and "Orange" stay inside their cells (design review M1) */
+@media (max-width:519px){.pc-strip{gap:.25rem}.pc-strip li{padding:.3rem .3rem}.pc-strip .lvl{flex-direction:column;align-items:flex-start;gap:.15rem}}
 .pc-calm{color:var(--ink)}
 .blk .wl details{margin:.2rem 0 0;font-size:.9rem}
 .pc-days{list-style:none;margin:0;padding:0;display:grid;gap:.1rem}

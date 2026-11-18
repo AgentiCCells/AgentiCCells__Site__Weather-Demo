@@ -54,6 +54,7 @@ body.d-postcard main{max-width:62rem}
 .pcp-facts li{padding:.45rem 0;border-top:1px solid var(--line)}
 .pcp-facts a{text-decoration-thickness:1px;text-underline-offset:2px}
 .pcp-facts a strong{color:var(--ink)}
+.pcp-facts .provline{margin:.2rem 0 0;font-size:.78rem;line-height:1.35;color:var(--muted);overflow-wrap:anywhere}
 .pcp-blk{border-top:1px solid var(--line);padding:.9rem 0 0;margin:0 0 1rem;min-width:0}
 .pcp-blk>h2{margin:0 0 .5rem;font-size:1.2rem}
 .pcp-blk>h2:focus{outline:none} .pcp-blk>h2:focus-visible{outline:3px solid var(--accent)}

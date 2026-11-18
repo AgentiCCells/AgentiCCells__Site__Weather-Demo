@@ -6,7 +6,7 @@
 // Written by developer.weather-demo@AgentiCCells.dinis (instance C), 2026-11-18, round 2, from
 // team/rounds/2/design/PROPOSAL.md sections 2 and 3.
 
-import { h, statusBand, termsBlock, sourceState } from '/assets/js/data.js';
+import { h, statusBand, termsBlock, sourceState, provLine } from '/assets/js/data.js';
 import { areaOf, SEA_NEAR_KM } from '/assets/js/places.js';
 import { swatch, levelsFor, warningWindows, lisbonNow, levelWord, areaName } from '/assets/js/map.js';
 import {
@@ -125,7 +125,9 @@ function drawStamp() {
   els.post.setAttribute('role', 'img');
 }
 
-// Facts from the back: each a link that turns the card over to its block.
+// Facts from the back: each a link that turns the card over to its block, with its source line
+// (publisher, source id, read time and state) beside it on the front (review M2); the back keeps the
+// full block, its source line and the terms.
 function drawFacts() {
   els.facts.replaceChildren(...BACK_KEYS.map(k => {
     const o = outcome[k];
@@ -133,7 +135,8 @@ function drawFacts() {
     const txt = !res[k] ? 'reading the file...' : agedClause(k, o?.clause, res[k])
       || (how.startsWith('not read') ? 'not read' : how.startsWith('islands') ? 'IPMA publishes none for the islands'
         : how.includes('beyond') ? `no sea point within ${SEA_NEAR_KM} km` : 'no single value; see the back');
-    return h('li', {}, h('a', { href: `#h-${k}` }, h('strong', {}, `${FACT[k]}: `), txt));
+    const S = SOURCES.find(x => x.key === k);
+    return h('li', {}, h('a', { href: `#h-${k}` }, h('strong', {}, `${FACT[k]}: `), txt), provLine(res[k] || { id: S.id }, { slow: slow[k] }));
   }));
 }
 

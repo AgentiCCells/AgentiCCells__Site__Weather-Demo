@@ -169,7 +169,11 @@ function rowLabel(row, { id } = {}) {
   else if (row.state === 'missing') read = 'not read';
   else if (!st.readAt) read = 'read time unknown';
   else if (ri.before) read = `read before today: ${st.ago}`;
-  else read = `read ${ri.local.slice(11, 16)} Portugal time, ${st.ago}`;
+  else {
+    // UTC, as the provLine under the row says it (review S3).
+    const d = new Date(st.readAt);
+    read = Number.isNaN(d.getTime()) ? `read ${ri.local.slice(11, 16)} Portugal time, ${st.ago}` : `read ${d.toISOString().slice(11, 16)} UTC, ${st.ago}`;
+  }
   return [h('a', { href: S.href, class: 'tt-name' }, LABEL[row.key]),
     h('span', { class: 'tt-read' }, read),
     ['stale', 'old', 'unknown'].includes(row.state) ? h('strong', { class: `tt-state pl-${row.state}` }, st.word) : null,
@@ -217,7 +221,7 @@ function table(m) {
     body.push(h('tr', { class: 'tt-provrow' }, h('td', { colspan: '6' }, row.R.prov)));
   }
   const t = h('table', { class: 'tt-table', style: `--now:${(m.nowMin / DAY_MIN) * 100}%` },
-    h('caption', {}, `${m.p.name}: every source on one five-day axis. The line in Today marks now; a tick marks when each file was read.`),
+    h('caption', {}, `${m.p.name}: every source on one five-day axis. The solid tick at the top of Today marks now; a dotted tick marks when each file was read.`),
     h('colgroup', {}, h('col', { class: 'tt-c0' }), days.map(() => h('col'))),
     h('thead', {}, head), h('tbody', {}, body));
   return h('div', { class: 'tt-wide' }, t);
@@ -237,7 +241,9 @@ function daySections(m) {
       else if (row.today && i === 0) kids = row.today();
       else if (row.span) kids = i === 0 ? row.span.make() : [none(`no value: ${row.span.short}`)];
       else kids = row.cells[i]();
-      items.push(h('li', { class: `tt-item${row.mark ? ` tt-mark-${row.mark}` : ''}` }, link(key), ': ', h('span', { class: 'tt-val' }, kids)));
+      // A stale or old file is said in words at the item, not by the coloured rule alone (review S1).
+      const word = ['stale', 'old'].includes(row.mark) ? [' (', h('strong', { class: `tt-iword pl-${row.mark}` }, row.mark), ')'] : [];
+      items.push(h('li', { class: `tt-item${row.mark ? ` tt-mark-${row.mark}` : ''}` }, link(key), ...word, ': ', h('span', { class: 'tt-val' }, kids)));
     }
     return h('section', { class: 'tt-day', 'aria-labelledby': `tt-d${i}` },
       h('h2', { id: `tt-d${i}` }, i === 0 ? `Today, ${fmtDay(d)}` : fmtDay(d), i === 0 ? h('span', { class: 'tt-nowlab' }, ` · now ${m.now.slice(11, 16)} Portugal time`) : null),

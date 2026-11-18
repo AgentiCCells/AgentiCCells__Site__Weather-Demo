@@ -48,3 +48,21 @@ Screenshots: `team/rounds/2/build/shots-d/` (scripts/shots.mjs --max-height=2000
 3. The `charts.css` link on `/observations/` (above).
 4. Timetable's now line passes behind the text of Today's cells; it is drawn under the text, but the reviewer may want it lighter or as a top tick only.
 5. The forecast cards at 600 px and wider are `<details>` too: a reader can close one by its header. Kept, as harmless.
+
+## Fixes after review
+
+By developer.weather-demo@AgentiCCells.dinis, 2026-11-18, about 17:50 to 18:04 UTC (`date -u` at the end: 18:03:44 UTC), as a sub-agent of conductor.weather-demo@AgentiCCells.dinis. From `team/rounds/2/review/BUILD.md` (reviewer) and `team/rounds/2/design/REVIEW.md` (designer). Not committed.
+
+What changed:
+- Reviewer M1, `/observations/` silent-stations fold: `silentFold()` now spreads the town links into one flat list (h() flattens one level only), so each "(nearest to <town>)" is a link with the town's name. 7 links at the 17:56 UTC read; no URL in the text.
+- Reviewer M2, Postcard front: each of the four facts (station, sea, UV, fire risk) carries its provLine beside it on the front (publisher, source id, read time and age, state word when not fresh, terms, card, latest.json). The back keeps the full blocks and terms. `postcard.js` `drawFacts()`, `postcard.css` `.pcp-facts .provline`.
+- Designer M1, warnings strip at 390 px (Postcard and `/place/`, shared `site.css`): below 520 px the swatch sits above the level word and the cell padding is a little smaller. Measured: text ends 7 to 12 px inside each cell at 390 px (was 9 to 15 px past); Two towns 17 to 27 px inside.
+- Designer M2 / reviewer S2, Timetable "now": drawn as a 3 px accent tick in the top padding of each Today cell (and at the foot of the Today header), no longer across the text. Caption updated. Read ticks shortened to the same padding band. Measured: 0 text boxes cross the tick at 1366 px.
+- Reviewer S1, Timetable on a phone: a stale or old item reads "Sea (stale): ...", "UV index (old): ..." with the word in the state colour.
+- Reviewer S3, Timetable row labels: "read <HH:MM> UTC, <age>", as the provLine.
+- Reviewer S4, `/observations/` column button: `aria-pressed` dropped; the label still changes ("Show all 9 columns" / "Show 4 columns").
+- Reviewer S6, `/forecasts/` card summary: a visually hidden " · " before "area", so it reads "rain 100% · area Bragança" (at 600 px and up the area sits on its own line, so the separator is not drawn).
+
+How checked: `node scripts/build.mjs`; `_site/` served on localhost; headless Chromium (Playwright) at 390 and 1366 px, light and dark, on Postcard (Lisboa 1110600, Faro 1080500), Timetable, `/place/` for Lisboa and Faro, `/observations/`, `/forecasts/` and Two towns. Live files from data.promptugal.news (read 17:54 to 17:56 UTC), served through `page.route`, with a yellow spell (Lisboa) and an orange spell (Faro) added to the warnings file so every strip cell shows a level word (simulation, for the test only); a second run with the sea file 5 h old and UV 30 h old. All 64 runs: no horizontal overflow, no console error; `/place/` for Lisboa and Faro draws as before apart from the strip layout on phones. Then `node scripts/validate.mjs` OK, `node scripts/leak-scan.mjs` OK (251 files), `node --test tests/*.test.mjs` 33 of 33.
+
+Open: none of the designer's polish items (P1 to P18) were in this brief.
