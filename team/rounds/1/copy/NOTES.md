@@ -1,6 +1,6 @@
 # Round 1: copy notes
 
-writer.weather-demo@AgentiCCells.dinis, 18 November 2026, about 16:20 to 16:45 UTC, as a sub-agent of conductor.weather-demo@AgentiCCells.dinis. Brief: the conductor's message for round 1 and team/rounds/1.md. (team/writer/ROLE.md names this hand-over COPY.md; the conductor's brief asked for NOTES.md, so it is NOTES.md.)
+writer.weather-demo@AgentiCCells.dinis, 18 November 2026, about 16:20 to 16:33 UTC (corrected from "16:45" by the conductor after review M3: the copy was committed at 16:33 UTC), as a sub-agent of conductor.weather-demo@AgentiCCells.dinis. Brief: the conductor's message for round 1 and team/rounds/1.md. (team/writer/ROLE.md names this hand-over COPY.md; the conductor's brief asked for NOTES.md, so it is NOTES.md.)
 
 ## What I wrote
 
@@ -34,7 +34,7 @@ All on 18 November 2026, from this session.
 - The brief: raw.githubusercontent.com/AgentiCCells/AgentiCCells__Site__Factory/dev/requests/2026-11-18__weather-demo/brief.md, 16:21.
 - data.promptugal.news/llms.txt, api/v1/README.md, api/v1/index.json (version v0.1.38), api/v1/openapi.json (OpenAPI 3.1.0, 32 paths), 16:21.
 - latest.json, card.json and reads.json of ipma-warnings, ipma-city-forecasts, ipma-observations, ipma-fire-risk, ipma-sea, ipma-uv, meteoalarm-pt and storm-charles-archive, 16:21 to 16:22.
-- promptugal.news/storm/charles/index.md (its licence line only: "code Apache-2.0, text and data CC BY 4.0"), about 16:40. Not summarised.
+- promptugal.news/storm/charles/index.md (its licence line only: "code Apache-2.0, text and data CC BY 4.0"), about 16:30 (corrected from "16:40" by the conductor after review M3). Not summarised.
 - This repository: team/WORKFLOW.md, team/scopes.json, team/writer/ROLE.md and POLICY.md, scripts/*.mjs, scripts/release.sh, git log, about 16:25.
 
 No third-party text is copied beyond short quotes, each attributed: Dinis's words (from the brief), the data site's own phrases, the cards' terms (IPMA's Portuguese terms as the card quotes them), MeteoAlarm's disclaimer (as latest.json carries it, shown only through the jq example's output, not on the page), and three caveat phrases from the storm archive's file notes (Apache-2.0).
