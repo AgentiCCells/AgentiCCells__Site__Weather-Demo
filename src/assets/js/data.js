@@ -207,3 +207,141 @@ export function runStrip(readsResult) {
   return h('figure', { class: 'runs' }, h('div', { class: 'table-wrap' }, svg), ul, h('figcaption', {}, `The collector's last ${runs.length} runs (from reads.json), oldest first. `,
     h('span', { class: 'key run-changed' }), ' new data ', h('span', { class: 'key run-same' }), ' unchanged ', h('span', { class: 'key run-first' }), ' first read ', h('span', { class: 'key run-fail' }), ' a read failed.'));
 }
+
+// ---------- the compact provenance line and the status band ----------
+// Added by developer.weather-demo@AgentiCCells.dinis (instance A), 2026-11-18, round 1, from
+// team/rounds/1/design/PROPOSAL.md section 4. The functions above are unchanged.
+
+// "8 min ago", "4 h ago", "2 days ago": the same steps as staleness() above.
+function agoText(m) {
+  return m < 1 ? 'just now' : m < 90 ? `${m} min ago` : m < 48 * 60 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} days ago`;
+}
+// "18 Nov, 16:13 UTC"
+function fmtShortUTC(iso) {
+  const d = new Date(iso);
+  return isNaN(d) ? 'unknown time' : `${d.getUTCDate()} ${MON[d.getUTCMonth()]}, ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} UTC`;
+}
+// The state words of section 4.2, without colour (the page adds the colour beside the word).
+export const STATE_WORDS = {
+  stale: 'stale: the collector may have missed runs',
+  old: 'old: these figures may no longer hold',
+  slow: 'still reading: data.promptugal.news is slow',
+  unknown: 'read time unknown',
+};
+
+// The state of one source as read: src is a loadSource() result, or null while it is still
+// being read. opts.slow: true once SLOW_MS has passed without an answer.
+// Returns { level: 'fresh' | 'stale' | 'old' | 'unknown' | 'missing' | 'reading' | 'slow', readAt, ago, word }.
+// Staleness is judged by read_at only, never by "the file answered" (data notes, round 1).
+export function sourceState(src, { slow = false } = {}) {
+  if (!src || !src.latest) return { level: slow ? 'slow' : 'reading', readAt: null, ago: null, word: slow ? STATE_WORDS.slow : 'reading' };
+  if (!src.latest.ok) return { level: 'missing', readAt: null, ago: null, word: `not read: ${src.latest.error || 'unknown error'}` };
+  const L = src.latest.data;
+  const readAt = L?.read_at || L?.provenance?.read_at || null;
+  const m = ageMinutes(readAt);
+  if (m === null) return { level: 'unknown', readAt: null, ago: null, word: STATE_WORDS.unknown };
+  const level = m > OLD_MIN ? 'old' : m > STALE_MIN ? 'stale' : 'fresh';
+  return { level, readAt, ago: agoText(m), word: level === 'fresh' ? agoText(m) : STATE_WORDS[level] };
+}
+
+// The short name of a publisher: the card's `publisher` up to its first comma, or IPMA for an
+// ipma-* source whose card was not read (latest.provenance.source names IPMA's file).
+export function publisherShort(src) {
+  const p = src?.card?.ok ? src.card.data?.publisher : null;
+  if (p) return String(p).split(',')[0].trim();
+  return /^ipma-/.test(src?.id || '') ? 'IPMA' : (src?.id || 'unknown publisher');
+}
+
+// One line of provenance (proposal section 4.1), the parts joined by " · ":
+// "IPMA (ipma-observations), via data.promptugal.news · read 18 Nov, 16:13 UTC, 8 min ago ·
+//  <state word when not fresh> · terms: as below · card · latest.json"
+// src: a loadSource() result (or { id } while loading). Options:
+//   termsHref: where the page's terms paragraph is ('#terms' unless given; null to print the
+//     card's summary in the line instead), slow (see sourceState), archive (true for a source
+//     meant to be fixed: "archived <date>" and no staleness), extra (nodes added before "card").
+export function provLine(src, { termsHref = '#terms', slow = false, archive = false, extra } = {}) {
+  const id = src?.id || 'unknown';
+  const u = urls(id);
+  const st = sourceState(src?.latest ? src : null, { slow });
+  const parts = [[`${publisherShort(src)} (${id}), via data.promptugal.news`]];
+  let level = st.level;
+  if (archive && src?.latest?.ok) {
+    level = 'archive';
+    parts.push([`archived ${st.readAt ? fmtShortUTC(st.readAt) : 'at an unknown time'}`]);
+  } else if (st.level === 'missing' || st.level === 'reading' || st.level === 'slow' || st.level === 'unknown') {
+    parts.push([h('span', { class: `pl-state pl-${st.level}` }, st.word)]);
+  } else {
+    parts.push([`read ${fmtShortUTC(st.readAt)}, ${st.ago}`]);
+    if (st.level !== 'fresh') parts.push([h('strong', { class: `pl-state pl-${st.level}` }, st.word)]);
+  }
+  if (src?.latest?.ok) {
+    const C = src.card?.ok ? src.card.data : null;
+    if (!C) parts.push(['terms: card not read; see the card before reuse']);
+    else if (termsHref) parts.push(['terms: ', h('a', { href: termsHref }, 'as below')]);
+    else parts.push([`terms: ${C.terms?.summary || 'the card states none'}`]);
+  }
+  if (extra) parts.push([extra].flat());
+  parts.push([h('a', { href: u.card }, 'card')], [h('a', { href: u.latest }, 'latest.json')]);
+  const kids = [];
+  parts.forEach((p, i) => { if (i) kids.push(' · '); kids.push(...p); });
+  return h('p', { class: `provline provline-${level}` }, ...kids);
+}
+
+// The status band (proposal section 2.1): one honest line about every source a page reads.
+// entries: [{ id, name, href, src (loadSource() result, or null while reading), slow }].
+// Options: what ("sources" unless given), slowCount (true to report files still loading after
+// SLOW_MS). Returns { level, text, el } where el is a <p role="status">; the band never says
+// "all fine" while a file is missing, reading or not fresh.
+export function statusBand(entries, { what = 'sources' } = {}) {
+  const states = entries.map(e => ({ e, st: sourceState(e.src, { slow: e.slow }) }));
+  const n = entries.length;
+  const words = { one: n === 7 ? 'seven' : n === 6 ? 'six' : String(n) };
+  const pending = states.filter(x => x.st.level === 'reading' || x.st.level === 'slow');
+  const bad = states.filter(x => ['stale', 'old', 'unknown', 'missing'].includes(x.st.level));
+  const name = x => x.e.href ? h('a', { href: x.e.href }, x.e.name) : x.e.name;
+  const el = h('p', { class: 'band', role: 'status' });
+  let level = 'fresh';
+  if (bad.length) {
+    level = bad.some(x => x.st.level === 'old' || x.st.level === 'missing') ? 'old' : 'stale';
+    const kids = [h('strong', {}, 'Not current: ')];
+    bad.forEach((x, i) => {
+      if (i) kids.push(' · ');
+      const s = x.st;
+      kids.push(name(x), s.level === 'missing' ? ` could not be read (${s.word.replace(/^not read: /, '')})`
+        : s.level === 'unknown' ? ': read time unknown'
+          : ` read ${s.ago} (${s.level})`);
+    });
+    if (pending.length) kids.push(` · still reading ${pending.length} of ${n}`);
+    el.append(...kids);
+  } else if (pending.length) {
+    level = pending.some(x => x.st.level === 'slow') ? 'slow' : 'reading';
+    el.append(level === 'slow'
+      ? `Still reading ${pending.length} of ${n} ${what}: data.promptugal.news is slow.`
+      : `Reading ${n} ${what} from data.promptugal.news...`);
+  } else {
+    const oldest = states.map(x => ageMinutes(x.st.readAt)).reduce((a, b) => Math.max(a, b), 0);
+    el.append(`All ${words.one} ${what} read within the last 3 hours (oldest ${agoText(oldest)}).`);
+  }
+  el.classList.add(`band-${level}`);
+  return { level, el };
+}
+
+// The terms paragraph(s) for a page (id="terms"): when every card's terms.summary is the same,
+// one paragraph; otherwise one per source. srcs: loadSource() results. Each card's page links.
+export function termsBlock(srcs, { intro } = {}) {
+  const read = srcs.filter(s => s?.card?.ok && s.card.data?.terms?.summary);
+  const notRead = srcs.filter(s => !(s?.card?.ok && s.card.data?.terms?.summary));
+  const groups = new Map();
+  for (const s of read) {
+    const k = s.card.data.terms.summary;
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(s);
+  }
+  const page = s => s.card.data.terms.page ? [' (', h('a', { href: s.card.data.terms.page }, 'terms page'), s.card.data.terms.read_at ? `, read by the data site on ${s.card.data.terms.read_at}` : '', ')'] : '';
+  const paras = [...groups.entries()].map(([summary, list]) => h('p', {},
+    h('strong', {}, list.length > 1 ? `All ${list.length} files from ${publisherShort(list[0])} (${list.map(x => x.id).join(', ')}) carry the same terms: ` : `${publisherShort(list[0])} (${list[0].id}): `),
+    summary, page(list[0])));
+  if (notRead.length) paras.push(h('p', {}, h('strong', {}, 'Card not read: '),
+    notRead.map(s => s?.id).join(', '), '. See each card before reuse: ', notRead.flatMap((s, i) => [i ? ', ' : '', h('a', { href: urls(s.id).card }, `${s.id} card`)]), '.'));
+  return h('div', { class: 'terms' }, intro ? h('p', { class: 'note' }, intro) : null, ...paras);
+}

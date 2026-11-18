@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Your town | Weather, from our data</title>
+<meta name="description" content="Pick one of IPMA's 35 forecast places and see its warnings, five-day forecast, nearest station, sea, UV and fire risk together, each read live from data.promptugal.news with its source, read time and terms. Not a warning service.">
+<meta name="share-image" content="/assets/share/place.png">
+<!--HEAD-->
+</head>
+<body data-sources="ipma-warnings ipma-city-forecasts ipma-observations ipma-fire-risk ipma-sea ipma-uv">
+<!--HEADER-->
+<main id="main" class="wrap place-page">
+<div class="place-layout">
+<div class="picker-col">
+<details class="picker" id="picker" open>
+<summary>Choose a town <span class="muted">(35)</span></summary>
+<div class="picker-body">
+<div class="picker-find" id="picker-find" hidden>
+<label for="town-filter">Find a town</label>
+<input type="search" id="town-filter" autocomplete="off" spellcheck="false" aria-describedby="town-count">
+<p id="town-count" class="muted" aria-live="polite"></p>
+</div>
+<nav aria-label="Towns" id="towns">
+<h2 id="g-mainland">Mainland <span class="muted">(24)</span></h2>
+<ul class="towns" aria-labelledby="g-mainland">
+<li><a href="/place/?id=1160900" data-id="1160900">Viana do Castelo</a></li>
+<li><a href="/place/?id=1030300" data-id="1030300">Braga</a></li>
+<li><a href="/place/?id=1030800" data-id="1030800">Guimarães</a></li>
+<li><a href="/place/?id=1171400" data-id="1171400">Vila Real</a></li>
+<li><a href="/place/?id=1040200" data-id="1040200">Bragança</a></li>
+<li><a href="/place/?id=1131200" data-id="1131200">Porto</a></li>
+<li><a href="/place/?id=1010500" data-id="1010500">Aveiro</a></li>
+<li><a href="/place/?id=1182300" data-id="1182300">Viseu</a></li>
+<li><a href="/place/?id=1090700" data-id="1090700">Guarda</a></li>
+<li><a href="/place/?id=1090821" data-id="1090821">Penhas Douradas</a></li>
+<li><a href="/place/?id=1060300" data-id="1060300">Coimbra</a></li>
+<li><a href="/place/?id=1050200" data-id="1050200">Castelo Branco</a></li>
+<li><a href="/place/?id=1100900" data-id="1100900">Leiria</a></li>
+<li><a href="/place/?id=1141600" data-id="1141600">Santarém</a></li>
+<li><a href="/place/?id=1121400" data-id="1121400">Portalegre</a></li>
+<li><a href="/place/?id=1110600" data-id="1110600">Lisboa</a></li>
+<li><a href="/place/?id=1151200" data-id="1151200">Setúbal</a></li>
+<li><a href="/place/?id=1151300" data-id="1151300">Sines</a></li>
+<li><a href="/place/?id=1070500" data-id="1070500">Évora</a></li>
+<li><a href="/place/?id=1020500" data-id="1020500">Beja</a></li>
+<li><a href="/place/?id=1080500" data-id="1080500">Faro</a></li>
+<li><a href="/place/?id=1080800" data-id="1080800">Loulé</a></li>
+<li><a href="/place/?id=1081100" data-id="1081100">Portimão</a></li>
+<li><a href="/place/?id=1081505" data-id="1081505">Sagres</a></li>
+</ul>
+<h2 id="g-madeira">Madeira <span class="muted">(2)</span></h2>
+<ul class="towns" aria-labelledby="g-madeira">
+<li><a href="/place/?id=2320100" data-id="2320100">Porto Santo</a></li>
+<li><a href="/place/?id=2310300" data-id="2310300">Funchal</a></li>
+</ul>
+<h2 id="g-azores">Azores <span class="muted">(9)</span></h2>
+<ul class="towns" aria-labelledby="g-azores">
+<li><a href="/place/?id=3480200" data-id="3480200">Santa Cruz das Flores</a></li>
+<li><a href="/place/?id=3490100" data-id="3490100">Vila do Corvo</a></li>
+<li><a href="/place/?id=3430100" data-id="3430100">Angra do Heroísmo</a></li>
+<li><a href="/place/?id=3470100" data-id="3470100">Horta</a></li>
+<li><a href="/place/?id=3460200" data-id="3460200">Madalena</a></li>
+<li><a href="/place/?id=3440100" data-id="3440100">Santa Cruz da Graciosa</a></li>
+<li><a href="/place/?id=3450200" data-id="3450200">Velas</a></li>
+<li><a href="/place/?id=3420300" data-id="3420300">Ponta Delgada</a></li>
+<li><a href="/place/?id=3410100" data-id="3410100">Vila do Porto</a></li>
+</ul>
+</nav>
+</div>
+</details>
+</div>
+<div class="card-col" id="card">
+<div id="intro">
+<h1 tabindex="-1">Weather by town</h1>
+<p class="lede">Choose one of the 35 places IPMA forecasts for. Its warnings, five-day forecast, nearest station, sea, UV and fire risk are then read live in your browser from data.promptugal.news and shown together, each with its source, the time it was read and the terms.</p>
+<p id="place-msg" class="muted" role="status"></p>
+<noscript><p class="status">The figures for a town are read live in your browser from data.promptugal.news and need JavaScript. The files: <a href="https://data.promptugal.news/api/v1/ipma-warnings/latest.json">warnings</a>, <a href="https://data.promptugal.news/api/v1/ipma-city-forecasts/latest.json">forecasts</a>, <a href="https://data.promptugal.news/api/v1/ipma-observations/latest.json">stations</a>, <a href="https://data.promptugal.news/api/v1/ipma-sea/latest.json">sea</a>, <a href="https://data.promptugal.news/api/v1/ipma-uv/latest.json">UV</a>, <a href="https://data.promptugal.news/api/v1/ipma-fire-risk/latest.json">fire risk</a>. IPMA's own forecast for each place: <a href="https://www.ipma.pt/en/otempo/prev.localidade.hora/">ipma.pt</a>.</p></noscript>
+</div>
+</div>
+</div>
+</main>
+<!--FOOTER-->
+<script type="module" src="/assets/js/pages/place.js"></script>
+</body>
+</html>

@@ -4,17 +4,99 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Weather, from our data</title>
-<meta name="description" content="A demonstration site: Portugal's weather from the public data PrompTugal.news collects, how it was built by an agentic team, and how to use the raw data.">
+<meta name="description" content="A demonstration site: Portugal's weather from the public data PrompTugal.news collects, read live in your browser, with every source's age, the warnings map and a view by town; how it was built by an agentic team, and how to use the raw data. Not a warning service.">
 <meta name="share-image" content="/assets/share/home.png">
 <!--HEAD-->
 </head>
-<body>
+<body data-sources="ipma-warnings ipma-city-forecasts ipma-observations ipma-fire-risk ipma-sea ipma-uv meteoalarm-pt storm-charles-archive">
 <!--HEADER-->
 <main id="main" class="wrap">
-<h1>Weather, from our data</h1>
-<p>A demonstration site: Portugal's weather from the public data PrompTugal.news collects, how it was built by an agentic team, and how to use the raw data.</p>
-<p>The team is building it now, in rounds. Until then, see <a href="/behind-the-scenes/">behind the scenes</a> for the team and its rules.</p>
+<div id="band"><p class="band band-reading" role="status">Reading seven sources from data.promptugal.news...</p></div>
+<h1>What the data says now</h1>
+<p class="lede">A demonstration site: Portugal's weather from the public data PrompTugal.news collects, read live in your browser from data.promptugal.news. Each figure says which file it came from and when that file was read. This page can be behind IPMA: check <a href="https://www.ipma.pt/en/">ipma.pt</a> before acting on anything.</p>
+<noscript><p class="status">The figures on this page are read live in your browser and need JavaScript. The files and their cards are listed on <a href="/use-the-data/">Use the data</a>; the town list below still works.</p></noscript>
+
+<section aria-labelledby="town-h">
+<h2 id="town-h">Your town</h2>
+<form class="town-form" action="/place/" method="get">
+<label for="town">Warnings, forecast, nearest station, sea, UV and fire risk together, for one of IPMA's 35 forecast places</label>
+<select id="town" name="id">
+<optgroup label="Mainland">
+<option value="1160900">Viana do Castelo</option>
+<option value="1030300">Braga</option>
+<option value="1030800">Guimarães</option>
+<option value="1171400">Vila Real</option>
+<option value="1040200">Bragança</option>
+<option value="1131200">Porto</option>
+<option value="1010500">Aveiro</option>
+<option value="1182300">Viseu</option>
+<option value="1090700">Guarda</option>
+<option value="1090821">Penhas Douradas</option>
+<option value="1060300">Coimbra</option>
+<option value="1050200">Castelo Branco</option>
+<option value="1100900">Leiria</option>
+<option value="1141600">Santarém</option>
+<option value="1121400">Portalegre</option>
+<option value="1110600">Lisboa</option>
+<option value="1151200">Setúbal</option>
+<option value="1151300">Sines</option>
+<option value="1070500">Évora</option>
+<option value="1020500">Beja</option>
+<option value="1080500">Faro</option>
+<option value="1080800">Loulé</option>
+<option value="1081100">Portimão</option>
+<option value="1081505">Sagres</option>
+</optgroup>
+<optgroup label="Madeira">
+<option value="2320100">Porto Santo</option>
+<option value="2310300">Funchal</option>
+</optgroup>
+<optgroup label="Azores">
+<option value="3480200">Santa Cruz das Flores</option>
+<option value="3490100">Vila do Corvo</option>
+<option value="3430100">Angra do Heroísmo</option>
+<option value="3470100">Horta</option>
+<option value="3460200">Madalena</option>
+<option value="3440100">Santa Cruz da Graciosa</option>
+<option value="3450200">Velas</option>
+<option value="3420300">Ponta Delgada</option>
+<option value="3410100">Vila do Porto</option>
+</optgroup>
+</select>
+<button type="submit">Show</button>
+</form>
+<p id="last-town" class="muted"></p>
+</section>
+
+<section aria-labelledby="w-h">
+<h2 id="w-h">Warnings by area</h2>
+<div id="warnings-block"><p class="status loading">Reading IPMA's warnings from data.promptugal.news...</p></div>
+<h3 id="w-table-h" tabindex="-1">Warnings as a table</h3>
+<div id="warnings-table"><p class="status loading">Reading IPMA's warnings from data.promptugal.news...</p></div>
+</section>
+
+<section aria-labelledby="src-h">
+<h2 id="src-h">Every source, in one line</h2>
+<p class="note">Our own headline from each file, with the time PrompTugal.news's collector read it. Fresh: read in the last 3 hours. Stale: 3 to 24 hours. Old: more than 24 hours, so the figures may no longer hold. The Storm Charles archive is a fixed record and has no age.</p>
+<div class="panel"><ul class="heads" id="heads"><li class="muted">Reading from data.promptugal.news...</li></ul></div>
+</section>
+
+<section aria-labelledby="terms">
+<h2 id="terms" tabindex="-1">Terms</h2>
+<div id="terms-body"><p class="muted">Reading the source cards...</p></div>
+</section>
+
+<section aria-labelledby="more-h">
+<h2 id="more-h">How this site works</h2>
+<ul class="page-links">
+<li><a href="/how-it-was-made/"><strong>How it was made</strong><span>An agent team, in rounds, with a policy per role and the gates every release passes.</span></a></li>
+<li><a href="/use-the-data/"><strong>Use the data</strong><span>The files, copy-paste examples in JavaScript and curl, how to read a card and its terms.</span></a></li>
+<li><a href="/behind-the-scenes/"><strong>Behind the scenes</strong><span>The team, its policies, the flow and every round's record.</span></a></li>
+</ul>
+<p>For AI tools and agents: <a href="/use-with-ai/">Use with AI</a> (llms.txt and a Markdown copy of every page).</p>
+</section>
 </main>
 <!--FOOTER-->
+<script type="module" src="/assets/js/pages/home.js"></script>
 </body>
 </html>
