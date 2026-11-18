@@ -74,7 +74,7 @@ const PAGES = [
   ['observations', 'Stations', "The latest hour's readings from IPMA's stations, on a map and in a table, with the nearest town."],
   ['fire-risk', 'Fire risk', "IPMA's fire risk class for 278 mainland municipalities, for three days."],
   ['sea', 'Sea', 'Wave heights and sea temperature for 12 coastal places, on one scale, with the towns nearby.'],
-  ['uv', 'UV index', 'The UV index by place and day, in the WHO bands, each place linked to its town.'],
+  ['uv', 'UV index', 'The UV index by place and day, in IPMA\'s bands, each place linked to its town.'],
   ['storm-charles', 'Storm Charles, archived', 'A fixed record of 10 to 12 November 2026: the archive of the storm site, read live.'],
   ['use-the-data', 'Use the data', 'The addresses, copy-paste examples in curl and JavaScript, the cards and their terms.'],
   ['how-it-was-made', 'How it was made', 'From a brief to this site: an agent team, its rounds, its checks and its record.'],
