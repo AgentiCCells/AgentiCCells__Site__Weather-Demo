@@ -1,0 +1,16 @@
+{
+  "about": "What each role of the weather demo cell may change, as path globs (* within a folder, ** across folders). scripts/role-scope.mjs fails any commit whose Agent: trailer names a role here and touches a path outside that role's list. Kept by conductor.weather-demo@AgentiCCells.dinis; a change that widens a role needs Dinis Cruz's word, recorded in the commit.",
+  "team": "AgentiCCells.dinis",
+  "suffix": ".weather-demo",
+  "roles": {
+    "conductor": ["**"],
+    "analyst": ["team/rounds/*/data/**", "src/assets/js/codes.js", "src/assets/js/places.js", "tests/**"],
+    "designer": ["team/rounds/*/design/**"],
+    "developer": ["src/**", "scripts/lib.mjs", "scripts/layout.mjs", "scripts/behind.mjs", "scripts/designs.mjs", "scripts/cards.mjs", "scripts/shots.mjs", "tests/**", "team/rounds/*/build/**"],
+    "writer": ["src/**", "team/rounds/*/copy/**"],
+    "reviewer": ["team/rounds/*/review/**"]
+  },
+  "changes": [
+    "2026-11-18, conductor: first version, six roles, from the brief; adapted from the IPMA-Data cell's scopes (AgentiCCells/AgentiCCells__Site__IPMA-Data, team/scopes.json), with places.js added to the analyst."
+  ]
+}
