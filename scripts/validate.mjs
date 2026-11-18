@@ -23,6 +23,12 @@ for (const f of [...files, 'hub.json', 'README.md']) {
     if (!/<title>[^<]+<\/title>/.test(s)) fail(`${f}: no <title>`);
     if (!/<meta name="description" content="[^"]+"/.test(s)) fail(`${f}: no description`);
     if (!/<html lang="/.test(s)) fail(`${f}: no lang on <html>`);
+    // conductor.ipma-data@ (2026-11-18): the brief's rules on every page, and a link preview.
+    if (!s.includes('Not a warning service. For warnings and safety, follow IPMA (ipma.pt) and ANEPC.')) fail(`${f}: the disclaimer is missing`);
+    if (/<!--(HEAD|HEADER|FOOTER)-->/.test(s)) fail(`${f}: layout placeholder left unreplaced`);
+    if (!/<meta property="og:image" content="https:\/\/[^"]+\.png"/.test(s)) fail(`${f}: no link preview image (og:image)`);
+    else { const img = s.match(/<meta property="og:image" content="https:\/\/[^/]+(\/[^"]+)"/)[1]; if (!existsSync(join('_site', img))) fail(`${f}: link preview image ${img} is missing`); }
+    if (/\bofficial (IPMA|warning)|IPMA's (site|website)\b/i.test(s.replace(/not (IPMA's|official)/gi, ''))) fail(`${f}: reads as if the site were IPMA's or official`);
     for (const m of s.matchAll(/<script[^>]+src="([^"]+)"/g)) if (/^(https?:)?\/\//.test(m[1])) fail(`${f}: third-party script ${m[1]}`);
     for (const m of s.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)) if (/^(https?:)?\/\//.test(m[1])) fail(`${f}: third-party stylesheet ${m[1]}`);
     for (const m of s.matchAll(/(?:href|src)="([^"#?]+)/g)) {

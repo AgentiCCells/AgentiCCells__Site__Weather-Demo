@@ -1,0 +1,14 @@
+{
+  "about": "The designs of this site. Round 1 has the main design only; five more come from the design rounds (team/rounds/). Every design reads the same live files from data.promptugal.news. Not a warning service. For warnings and safety, follow IPMA (ipma.pt) and ANEPC.",
+  "designs": [
+    {
+      "slug": "main",
+      "name": "The main design",
+      "line": "The whole site on a calm page, in light or dark.",
+      "path": "/",
+      "palette": ["#f7f5f0", "#ffffff", "#1d2329", "#5b6670", "#0b5c7a"],
+      "fonts": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+      "figures": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+    }
+  ]
+}

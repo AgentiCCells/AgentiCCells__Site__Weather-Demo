@@ -1,0 +1,52 @@
+/* Behind the scenes: styles for the pages scripts/behind.mjs writes. Uses the tokens in
+   /assets/site.css. Code Apache-2.0. developer.ipma-data@AgentiCCells.dinis, round 2. */
+.crumbs ol{list-style:none;margin:0 0 .4rem;padding:0;display:flex;flex-wrap:wrap;gap:.2rem .5rem;font-size:.88rem;color:var(--muted)}
+.crumbs li+li::before{content:"/";margin-right:.5rem;color:var(--muted)}
+.crumbs a{display:inline-block;padding:.35rem 0}
+.bts code{font-family:var(--mono);font-size:.88em;overflow-wrap:anywhere}
+.bts .addr{font-family:var(--mono);font-size:.85rem;overflow-wrap:anywhere}
+.bts-toc{display:flex;flex-wrap:wrap;gap:0 1.2rem;padding:0;margin:.6rem 0 0;list-style:none}
+.bts-toc a{display:inline-block;padding:.5rem 0}
+.page-links.roles{grid-template-columns:repeat(auto-fill,minmax(min(100%,19rem),1fr))}
+.page-links.roles a span.addr{color:var(--ink);margin:.1rem 0 .3rem}
+.md{max-width:52rem;min-width:0}
+.md pre{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:.7rem .8rem;overflow-x:auto;font-size:.8rem;line-height:1.45;max-width:100%}
+.md pre code{overflow-wrap:normal;font-size:inherit}
+.md blockquote,blockquote.md{margin:1rem 0;padding:.2rem 0 .2rem 1rem;border-left:4px solid var(--accent)}
+.md .table-wrap{margin:.6rem 0 1rem}
+.md table{min-width:32rem}
+.md details{margin:.6rem 0}
+.md details>summary,.shots-d>summary{padding:.4rem 0}
+.md hr{border:0;border-top:1px solid var(--line);margin:1.5rem 0}
+.md li{margin:.2rem 0}
+.policy{margin-top:2rem;border-top:1px solid var(--line)}
+.flow{display:grid;gap:1rem 2.5rem;align-items:start}
+.flow .chart{min-width:0}
+.flow-svg{display:block;width:100%;max-width:420px;height:auto}
+.flow-svg .box{fill:var(--panel);stroke:var(--accent);stroke-width:1.5}
+.flow-svg text{fill:var(--ink);font-family:var(--font);font-size:16px}
+.flow-svg .t{font-weight:600}
+.flow-svg .num{fill:var(--accent);font-weight:700}
+.flow-svg .who{fill:var(--muted);font-size:14px}
+.flow-svg .f{font-family:var(--mono);font-size:12.5px}
+.flow-svg .arrow{stroke:var(--muted);stroke-width:2;fill:none}
+.flow-svg .back{stroke-dasharray:5 4}
+.flow-svg .ah{fill:var(--muted)}
+.steps h3{margin-top:0}
+@media (min-width:900px){.flow{grid-template-columns:minmax(18rem,420px) minmax(0,1fr)}}
+.bts-bars{display:block;width:100%;max-width:520px;height:auto}
+.bts-bars text{fill:var(--ink);font-family:var(--font);font-size:13px}
+.bts-bars .val{font-variant-numeric:tabular-nums}
+.bts-bars .bar{fill:var(--accent)}
+.bts-bars .bar.none{fill:var(--muted)}
+.bars-fig{margin:1rem 0}
+.commits{list-style:none;margin:0;padding:0;max-width:52rem}
+.commits li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"time who sha" "subj subj subj";gap:.1rem .8rem;padding:.5rem 0;border-top:1px solid var(--line);align-items:baseline}
+.commits time{grid-area:time;font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.commits .who{grid-area:who;font-size:.85rem;color:var(--muted);white-space:nowrap}
+.commits .subj{grid-area:subj;overflow-wrap:anywhere}
+.commits .sha{grid-area:sha;display:inline-block;padding:.3rem 0}
+@media (min-width:760px){.commits li{grid-template-columns:7.5rem 9.5rem minmax(0,1fr) auto;grid-template-areas:"time who subj sha"}.commits.with-day li{grid-template-columns:11rem 9.5rem minmax(0,1fr) auto}}
+.shots{list-style:none;padding:0;margin:.6rem 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,13rem),1fr));gap:1rem}
+.shots img{display:block;width:100%;height:auto;max-height:18rem;object-fit:cover;object-position:top;border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+.shots span{display:block;font-size:.8rem;color:var(--muted);margin-top:.3rem;overflow-wrap:anywhere}

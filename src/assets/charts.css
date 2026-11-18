@@ -1,0 +1,118 @@
+/* charts.css: chart styles for the Forecasts, Sea and UV pages. Code Apache-2.0.
+   Written by developer.ipma-data@AgentiCCells.dinis (instance B), 2026-11-18, round 1.
+   Colours come from site.css tokens by var(--name), so the charts follow light and dark.
+   The fallbacks after each comma are the values in the round 1 design proposal
+   (team/rounds/1/design/PROPOSAL.md), used only until site.css defines the token. */
+:root{
+  --c-range:var(--t-range,#3a6ea5); --c-wave:var(--wave,#2f6f9f); --c-edge:var(--map-edge,#6f7880);
+  --c-uv1:var(--uv-low,#d6eecf); --c-uv2:var(--uv-mod,#f4c62a); --c-uv3:var(--uv-high,#e8862c); --c-uv4:var(--uv-vhigh,#c43f26); --c-uv5:var(--uv-ext,#6a3d9a);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--c-range:var(--t-range,#7fb2e5);--c-wave:var(--wave,#7fb2e5);--c-edge:var(--map-edge,#8b96a0)}}
+:root[data-theme="dark"]{--c-range:var(--t-range,#7fb2e5);--c-wave:var(--wave,#7fb2e5);--c-edge:var(--map-edge,#8b96a0)}
+
+/* shared */
+.cb-vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.cb-chart{min-height:12rem}
+.cb-note{font-size:.88rem;color:var(--muted);margin:.5rem 0;max-width:52rem}
+.cb-age{margin:.4rem 0 .8rem;padding:.4rem .7rem;border-left:4px solid var(--stale);background:var(--panel);font-size:.92rem}
+.cb-age-old{border-left-color:var(--old)}
+.cb-age strong{color:var(--ink)}
+.cb-scroll{position:relative;overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}
+.cb-scroll:focus-visible{outline:3px solid var(--accent)}
+.cb-num{font-variant-numeric:tabular-nums}
+.cb-legend{display:flex;flex-wrap:wrap;gap:.3rem 1rem;list-style:none;padding:0;margin:.6rem 0;font-size:.88rem}
+.cb-legend li{display:flex;align-items:center;gap:.35rem}
+.cb-sw{display:inline-block;width:1.4em;height:.9em;border:1px solid var(--c-edge);border-radius:3px;flex:none}
+.cb-ctl{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;margin:.4rem 0 1rem}
+.cb-ctl label{font-weight:600}
+.cb-ctl select{font:inherit;font-size:1rem;padding:.35rem .5rem;border:1px solid var(--c-edge);border-radius:6px;background:var(--panel);color:var(--ink);max-width:100%}
+.cb-btn{font:inherit;font-size:.85rem;padding:.15rem .5rem;border:1px solid var(--c-edge);border-radius:6px;background:var(--panel);color:var(--accent);cursor:pointer}
+.cb-btn:hover{background:var(--bg)}
+.cb-table caption{text-align:left;font-size:.88rem;color:var(--muted);padding:.3rem 0}
+.cb-table td.cb-num,.cb-table th.cb-num{text-align:right}
+details.cb-more{margin:1rem 0}
+details.cb-more summary{cursor:pointer;color:var(--accent);font-weight:600}
+
+/* forecasts: the focused place (columns are days; temperature runs bottom to top) */
+.fc-focus{margin:0 0 1rem}
+.fc-focus h3{margin:.2rem 0 .1rem}
+.fc-focus h3:focus{outline:none}
+.fc-meta{font-size:.85rem;color:var(--muted);margin:0 0 .6rem}
+.fc-big{display:grid;grid-template-columns:2.4rem repeat(var(--days,5),minmax(0,1fr));column-gap:.35rem;font-size:.82rem}
+.fc-big .fc-axis{position:relative;height:200px;margin:calc(2.2rem + 1.3rem) 0 1.3rem}
+.fc-big .fc-axis span{position:absolute;right:.25rem;transform:translateY(50%);color:var(--muted);font-size:.75rem}
+.fc-big .fc-col{display:flex;flex-direction:column;min-width:0}
+.fc-big .fc-day{font-weight:600;text-align:center;font-size:.8rem;line-height:1.2;height:2.2rem}
+.fc-vtrack{position:relative;height:200px;margin:1.3rem 0;border-top:1px solid var(--line);background:linear-gradient(to top,var(--line) 1px,transparent 1px) bottom/100% calc(100% / var(--steps,4))}
+.fc-vbar{position:absolute;left:50%;width:10px;margin-left:-5px;border-radius:5px;background:var(--c-range);min-height:3px}
+.fc-vlab{position:absolute;left:0;right:0;text-align:center;font-variant-numeric:tabular-nums;font-weight:600;font-size:.8rem;line-height:1.2}
+.fc-vlab.min{font-weight:400;color:var(--muted)}
+.fc-rainrow{position:relative;height:44px;border-bottom:1px solid var(--line);margin-top:.2rem}
+.fc-rainrow i{position:absolute;bottom:0;left:50%;width:14px;margin-left:-7px;background:var(--muted);border-radius:2px 2px 0 0}
+.fc-rainlab{text-align:center;font-variant-numeric:tabular-nums;font-size:.78rem;margin:.15rem 0 .3rem}
+.fc-words{text-align:center;font-size:.76rem;line-height:1.25;overflow-wrap:break-word;color:var(--ink)}
+@media (max-width:520px){.fc-big{column-gap:.2rem;grid-template-columns:2rem repeat(var(--days,5),minmax(0,1fr))}.fc-words,.fc-rainlab{font-size:.68rem}.fc-big .fc-day{font-size:.74rem}}
+.fc-words .wind{display:block;color:var(--muted);margin-top:.2rem}
+.fc-rowlab{grid-column:1;font-size:.72rem;color:var(--muted);align-self:center}
+
+/* forecasts: small multiples */
+.fc-region{margin-top:1.4rem}
+.fc-grid{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fill,minmax(min(100%,19rem),1fr))}
+.fc-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:.6rem .7rem;min-width:0}
+.fc-card.is-focus{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.fc-card header{display:flex;justify-content:space-between;align-items:baseline;gap:.4rem;flex-wrap:wrap}
+.fc-card h4{margin:0;font-size:1rem}
+.fc-card .fc-times{font-size:.72rem;color:var(--muted);margin:.1rem 0 .4rem}
+.fc-rows{list-style:none;margin:0;padding:0}
+.fc-rows li{display:grid;grid-template-columns:2.4rem minmax(0,1fr) 4.8rem 3.5rem;column-gap:.45rem;align-items:center;font-size:.8rem;padding:.12rem 0;border-top:1px solid var(--line)}
+.fc-rows li:first-child{border-top:0}
+.fc-rows .d{font-weight:600}
+.fc-htrack{position:relative;height:11px;border-right:1px solid var(--line);background:linear-gradient(to right,var(--line) 1px,transparent 1px) left/calc(100% / var(--steps,4)) 100%}
+.fc-hbar{position:absolute;top:1px;height:9px;border-radius:4px;background:var(--c-range);min-width:3px}
+.fc-dot{position:absolute;top:1px;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;background:var(--c-range)}
+.fc-t{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.fc-rain{display:flex;align-items:center;gap:.25rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.fc-rain b{display:inline-block;width:1.4rem;height:7px;background:var(--line);border-radius:2px;position:relative;overflow:hidden;flex:none}
+.fc-rain b i{position:absolute;left:0;top:0;bottom:0;background:var(--muted)}
+.fc-rows .w{grid-column:2 / -1;font-size:.72rem;color:var(--muted);line-height:1.3;padding-bottom:.1rem}
+.fc-scale{display:grid;grid-template-columns:2.4rem minmax(0,1fr) 4.8rem 3.5rem;column-gap:.45rem;font-size:.7rem;color:var(--muted)}
+.fc-scale span:nth-child(2){display:flex;justify-content:space-between}
+.fc-none{color:var(--muted);font-style:italic}
+
+/* sea: rows are places, columns are days, one metre scale in every cell */
+.sea-grid{display:grid;grid-template-columns:minmax(9rem,13rem) repeat(var(--days,3),minmax(0,1fr));gap:0 .7rem;font-size:.82rem}
+.sea-grid .sea-h{font-weight:600;color:var(--muted);padding:.2rem 0 .4rem;border-bottom:1px solid var(--line)}
+.sea-grid .sea-place{font-weight:600;padding:.55rem 0;border-bottom:1px solid var(--line);line-height:1.25}
+.sea-grid .sea-place small{display:block;font-weight:400;color:var(--muted);font-size:.72rem}
+.sea-cell{padding:.55rem 0;border-bottom:1px solid var(--line);min-width:0}
+.sea-track{position:relative;height:22px;border-right:1px solid var(--line);background:linear-gradient(to right,var(--line) 1px,transparent 1px) left/calc(100% / var(--steps,5)) 100%}
+.sea-bar{position:absolute;height:8px;border-radius:4px;min-width:3px}
+.sea-bar.total{top:2px;background:var(--c-wave)}
+.sea-bar.swell{top:12px;background:transparent;border:1.5px solid var(--c-wave);height:8px}
+.sea-txt{font-size:.74rem;line-height:1.3;margin-top:.25rem;font-variant-numeric:tabular-nums}
+.sea-txt span{display:block}
+.sea-txt .m{color:var(--muted)}
+.sea-axis{font-size:.7rem;color:var(--muted);display:flex;justify-content:space-between;padding-top:.2rem}
+.sea-key-total{background:var(--c-wave)}
+.sea-key-swell{background:transparent;border:1.5px solid var(--c-wave)}
+.sea-flag{color:var(--stale);font-weight:700}
+@media (max-width:640px){
+  .sea-grid{grid-template-columns:repeat(var(--days,3),minmax(0,1fr));gap:0 .45rem}
+  .sea-grid .sea-corner{display:none}
+  .sea-grid .sea-place{grid-column:1 / -1;padding:.6rem 0 .1rem;border-bottom:0}
+  .sea-cell{padding-top:.2rem}
+}
+
+/* UV: places by days, WHO bands, value written in every cell */
+.uv-grid{border-collapse:separate;border-spacing:3px;width:100%;min-width:30rem;font-size:.88rem}
+.uv-grid th{font-weight:600;color:var(--muted);text-align:left;padding:.2rem .4rem;border:0}
+.uv-grid th[scope="row"]{color:var(--ink);font-weight:500;min-width:8rem;width:13rem}
+.uv-grid th[scope="row"] small{display:block;color:var(--muted);font-weight:400;font-size:.75rem}
+.uv-grid td{padding:0;height:2.3rem;border:0}
+.uv-grid tbody tr.uv-region th{padding-top:.8rem;color:var(--muted);font-size:.82rem;text-transform:none}
+.uv-split{display:flex;gap:2px;height:100%}
+.uv-v{flex:1;display:flex;align-items:center;justify-content:center;border-radius:4px;font-variant-numeric:tabular-nums;font-weight:600;border:1px solid var(--c-edge);min-width:2.4rem}
+.uv-b1{background:var(--c-uv1);color:#1d2329}.uv-b2{background:var(--c-uv2);color:#1d2329}.uv-b3{background:var(--c-uv3);color:#1d2329}
+.uv-b4{background:var(--c-uv4);color:#fff}.uv-b5{background:var(--c-uv5);color:#fff}
+.uv-none{display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:.78rem;border:1px dashed var(--line);border-radius:4px}
+@media (forced-colors:active){.uv-v,.cb-sw{border-color:CanvasText}.fc-vbar,.fc-hbar,.fc-dot,.sea-bar.total{background:CanvasText}.sea-bar.swell{border-color:CanvasText}}

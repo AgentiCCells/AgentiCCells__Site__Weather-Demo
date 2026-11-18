@@ -5,6 +5,9 @@ import { join } from 'node:path';
 const version = process.env.SITE_VERSION || 'dev';
 rmSync('_site', { recursive: true, force: true });
 cpSync('src', '_site', { recursive: true });
+// Generated sections, then the shared layout (header, disclaimer, footer, link previews) on every page.
+for (const step of ['./behind.mjs', './designs.mjs']) { try { await import(step); } catch (e) { if (e.code !== 'ERR_MODULE_NOT_FOUND' || !String(e.message).includes(step.slice(2))) throw e; } }
+await import('./layout.mjs');
 const walk = d => readdirSync(d).flatMap(f => { const p = join(d, f); return statSync(p).isDirectory() ? walk(p) : [p]; });
 for (const f of walk('_site')) {
   if (!/\.(html|js|css|json|md|txt)$/.test(f)) continue;
