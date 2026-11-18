@@ -30,21 +30,18 @@ code{font-family:var(--mono);font-size:.88em;overflow-wrap:anywhere}
 </ul>
 
 <h2>What is in it</h2>
-<div class="table-wrap">
-<table>
-<caption>The archive's datasets, grouped by the first part of their name. Counts and sizes from <code>latest.json</code>, read 18 November 2026 at 16:22 UTC.</caption>
-<thead><tr><th scope="col">Group</th><th scope="col" class="num">Datasets</th><th scope="col" class="num">Files</th><th scope="col" class="num">Bytes</th><th scope="col">What the file notes say it holds</th></tr></thead>
-<tbody>
-<tr><td>weather</td><td class="num">12</td><td class="num">12</td><td class="num">796,181</td><td>IPMA's warnings for the Lisbon district and how they changed, IPMA's warnings as CAP messages through MeteoAlarm, IPMA's communiqués, forecasts, hourly station observations in Lisbon and in Madeira, Lisbon's rain, aeronautical forecasts and observations for Lisbon and Madeira airports, and observed wind against the forecast</td></tr>
-<tr><td>flights</td><td class="num">6</td><td class="num">91</td><td class="num">3,557,635</td><td>Airline aircraft seen around Lisbon and Madeira by adsb.lol's community receivers, the wind the airports reported on each runway with the departures each hour, wind fields from Open-Meteo, and two-sentence summaries written by an open-weight AI model and kept only when every number matched its input</td></tr>
-<tr><td>transport</td><td class="num">8</td><td class="num">8</td><td class="num">79,799</td><td>Bridges, buses, ferries, flights at Lisbon, Porto, Faro and Funchal (counts only), the metro and its timetable, trains and other services, each from the operator's own channel where it published one</td></tr>
-<tr><td>decisions</td><td class="num">4</td><td class="num">22</td><td class="num">255,728</td><td>A graph of who decided what and what each decision followed, each with a label (fact, evidence or hypothesis), a source and a read time; the decisions about the airport; the sources used and the addresses behind the timeline</td></tr>
-<tr><td>exposure</td><td class="num">7</td><td class="num">7</td><td class="num">209,672</td><td>Residents by warning area from the 2021 Census, people by hour, hospitals mapped in OpenStreetMap, Lisbon in 2 km squares and its 18 metropolitan municipalities with their low-lying land, where each of 51 ECMWF ensemble forecasts put the storm's centre, and modelled tides at Cascais, the Tagus and Funchal</td></tr>
-<tr><td>signals</td><td class="num">1</td><td class="num">1</td><td class="num">161,170</td><td>The incident's timeline as data</td></tr>
-<tr><td>watch</td><td class="num">1</td><td class="num">1</td><td class="num">67,302</td><td>Web Summit's own channels, watched for its decisions</td></tr>
-</tbody>
-</table>
-</div>
+<!-- The table is drawn by storm.js from latest.json, read live; the counts are never copied here.
+     The notes below are the writer's summaries of each group's files, shown in the table's last column. -->
+<div id="storm-groups" class="table-wrap"><p class="status loading">Reading the archive's datasets from data.promptugal.news...</p><noscript><p class="status fail">The table needs JavaScript. The counts and sizes are in <a href="https://data.promptugal.news/api/v1/storm-charles-archive/latest.json">storm-charles-archive/latest.json</a>.</p></noscript></div>
+<template id="storm-group-notes">
+<p data-group="weather">IPMA's warnings for the Lisbon district and how they changed, IPMA's warnings as CAP messages through MeteoAlarm, IPMA's communiqués, forecasts, hourly station observations in Lisbon and in Madeira, Lisbon's rain, aeronautical forecasts and observations for Lisbon and Madeira airports, and observed wind against the forecast</p>
+<p data-group="flights">Airline aircraft seen around Lisbon and Madeira by adsb.lol's community receivers, the wind the airports reported on each runway with the departures each hour, wind fields from Open-Meteo, and two-sentence summaries written by an open-weight AI model and kept only when every number matched its input</p>
+<p data-group="transport">Bridges, buses, ferries, flights at Lisbon, Porto, Faro and Funchal (counts only), the metro and its timetable, trains and other services, each from the operator's own channel where it published one</p>
+<p data-group="decisions">A graph of who decided what and what each decision followed, each with a label (fact, evidence or hypothesis), a source and a read time; the decisions about the airport; the sources used and the addresses behind the timeline</p>
+<p data-group="exposure">Residents by warning area from the 2021 Census, people by hour, hospitals mapped in OpenStreetMap, Lisbon in 2 km squares and its 18 metropolitan municipalities with their low-lying land, where each of 51 ECMWF ensemble forecasts put the storm's centre, and modelled tides at Cascais, the Tagus and Funchal</p>
+<p data-group="signals">The incident's timeline as data</p>
+<p data-group="watch">Web Summit's own channels, watched for its decisions</p>
+</template>
 <p class="note">The descriptions are short summaries of each file's own <code>about</code> note in the archive. Several files carry their own caveats there: the hospital map is "a map of buildings, not a statement that any is open"; the tides are "a model", not the official tide table; the census counts "where people sleep, not where they are at a given hour". Read a file's note before you use it.</p>
 
 <h2>The archive, read live</h2>

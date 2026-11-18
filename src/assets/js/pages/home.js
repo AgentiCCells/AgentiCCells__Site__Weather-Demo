@@ -53,8 +53,13 @@ const SOURCES = [
   { id: 'ipma-sea', name: 'Sea', href: '/sea/', head: d => {
     const cs = d.coasts || [];
     const t = today();
-    const top = cs.map(c => ({ c, v: (c.days || []).find(x => x.date === t)?.sea_max_m })).filter(x => isNum(x.v)).sort((a, b) => b.v - a.v)[0];
-    return `${plural(cs.length, 'coast')}${top ? `; highest total sea today up to ${top.v} m (${top.c.name})` : '; no total sea value for today'}.`;
+    const vals = cs.map(c => ({ c, v: (c.days || []).find(x => x.date === t)?.sea_max_m })).filter(x => isNum(x.v));
+    if (!vals.length) return `${plural(cs.length, 'coast')}; no total sea value for today.`;
+    // Every coast at the highest value: named up to three, counted above that.
+    const max = Math.max(...vals.map(x => x.v));
+    const top = vals.filter(x => x.v === max);
+    const where = top.length > 3 ? `${top.length} coasts` : top.map(x => x.c.name).join('; ');
+    return `${plural(cs.length, 'coast')}; highest total sea today up to ${max} m (${where}).`;
   } },
   { id: 'ipma-uv', name: 'UV', href: '/uv/', head: d => {
     const t = today();
@@ -99,8 +104,11 @@ function paintRow(S) {
   else if (!src.latest.ok) line = h('p', {}, h('strong', {}, 'Could not read: '), `${src.latest.error}. Nothing is shown in its place.`);
   else { let t; try { t = S.head(src.latest.data); } catch { t = null; } line = h('p', {}, t || 'The file was read but its shape has changed, so no headline is given.'); }
   const extra = S.context && src?.latest?.ok && src.latest.data.attribution ? [h('a', { href: S.href }, "MeteoAlarm's disclaimer, on the warnings page"), ' · ', h('a', { href: src.latest.data.attribution.meteoalarm || 'https://www.meteoalarm.org/' }, 'meteoalarm.org')] : null;
+  // MeteoAlarm's terms ask re-users to publish its disclaimer: print it as latest.json gives it.
+  const disclaimer = S.context && src?.latest?.ok ? h('p', { class: 'note' }, h('strong', {}, "MeteoAlarm's disclaimer: "),
+    src.latest.data.attribution?.disclaimer || h('em', {}, 'the disclaimer was not in the file; see www.meteoalarm.org.')) : null;
   li.replaceChildren(h('span', { class: `hl-word hl-${level}` }, h('span', { class: `dot d-${level === 'missing' ? 'fail' : ['fresh', 'stale', 'old'].includes(level) ? level : 'unknown'}`, 'aria-hidden': 'true' }), word),
-    ' ', h('a', { class: 'hl-name', href: S.href }, S.name), line, provLine(src || { id: S.id }, { slow: slow[S.id], archive: S.archive, extra }));
+    ' ', h('a', { class: 'hl-name', href: S.href }, S.name), line, ...(disclaimer ? [disclaimer] : []), provLine(src || { id: S.id }, { slow: slow[S.id], archive: S.archive, extra }));
 }
 SOURCES.forEach(paintRow);
 band();

@@ -20,15 +20,17 @@ During the storm, a team of incident agents ran a site, storm-charles.promptugal
 
 ## What is in it
 
-| Group | Datasets | Files | Bytes | What the file notes say |
-|---|---|---|---|---|
-| weather | 12 | 12 | 796,181 | IPMA's Lisbon warnings and how they changed, CAP messages via MeteoAlarm, IPMA's communiqués, forecasts, station observations in Lisbon and Madeira, Lisbon's rain, airport forecasts and observations, observed wind against forecast |
-| flights | 6 | 91 | 3,557,635 | Airline aircraft around Lisbon and Madeira (adsb.lol), runway wind with departures, Open-Meteo wind fields, model-written summaries checked against their input |
-| transport | 8 | 8 | 79,799 | Bridges, buses, ferries, flights (counts only), metro, trains, services, from operators' own channels where they publish |
-| decisions | 4 | 22 | 255,728 | Who decided what, with label, source and read time; airport decisions; sources and addresses |
-| exposure | 7 | 7 | 209,672 | Residents by warning area (Census 2021), people by hour, OSM hospitals, Lisbon grid and municipalities, 51 ECMWF ensemble tracks, modelled tides |
-| signals | 1 | 1 | 161,170 | The incident timeline as data |
-| watch | 1 | 1 | 67,302 | Web Summit's own channels, watched for its decisions |
+| Group | What the file notes say |
+|---|---|
+| weather | IPMA's Lisbon warnings and how they changed, CAP messages via MeteoAlarm, IPMA's communiqués, forecasts, station observations in Lisbon and Madeira, Lisbon's rain, airport forecasts and observations, observed wind against forecast |
+| flights | Airline aircraft around Lisbon and Madeira (adsb.lol), runway wind with departures, Open-Meteo wind fields, model-written summaries checked against their input |
+| transport | Bridges, buses, ferries, flights (counts only), metro, trains, services, from operators' own channels where they publish |
+| decisions | Who decided what, with label, source and read time; airport decisions; sources and addresses |
+| exposure | Residents by warning area (Census 2021), people by hour, OSM hospitals, Lisbon grid and municipalities, 51 ECMWF ensemble tracks, modelled tides |
+| signals | The incident timeline as data |
+| watch | Web Summit's own channels, watched for its decisions |
+
+Datasets, files and bytes per group: count them from `files[]` (`dataset`, `bytes`) in latest.json; the HTML page draws them from the live file.
 
 Several files carry caveats in their own `about` notes (the hospitals are "a map of buildings, not a statement that any is open"; the tides are "a model"; census counts are "where people sleep"). Read a file's note before you use it.
 

@@ -1,5 +1,5 @@
-// pages/uv.js: IPMA's UV index forecast by place and day, coloured by the WHO bands, with the
-// value written in every cell. Where IPMA's file gives two values for one place and day, the cell
+// pages/uv.js: IPMA's UV index forecast by place and day, coloured by the UV index bands as IPMA
+// applies them, with the value written in every cell. Where IPMA's file gives two values for one place and day, the cell
 // splits and shows both; nothing is averaged or dropped. Places without a name are shown by id.
 // ES module. Code Apache-2.0.
 // Written by developer.ipma-data@AgentiCCells.dinis (instance B), 2026-11-18, round 1.
@@ -23,6 +23,8 @@ const fin = v => v !== null && v !== undefined && Number.isFinite(Number(v));
 // IPMA's globalIdLocal starts with 1 on the mainland, 2 in Madeira and 3 in the Azores.
 // A place without a name is not put in a region: the page does not guess where it is.
 const regionOf = p => p.name ? (({ 1: 'mainland', 2: 'madeira', 3: 'azores' })[String(p.id)[0]] || null) : null;
+// A band's range as IPMA applies it to one-decimal values (codes.js: min inclusive, max exclusive).
+const uvRange = b => b.min <= 0 ? `below ${b.max}` : Number.isFinite(b.max) ? `${b.min} to below ${b.max}` : `${b.min} and above`;
 const bandIdx = v => { const b = uvBand(v); return b ? UV_BANDS.indexOf(b) + 1 : 0; };
 
 // The stale or old line above the chart (data.js ageBanner), as on every data page.
@@ -115,11 +117,11 @@ async function main() {
     ageBanner(src.latest, AGE),
     h('figure', { class: 'chart' },
       h('div', { class: 'cb-scroll', tabindex: '0', role: 'region', 'aria-label': 'UV index by place and day' },
-        h('table', { class: 'uv-grid' }, h('caption', { class: 'cb-vh' }, "IPMA's UV index forecast by place and day, with the WHO band of each value."), head, body)),
+        h('table', { class: 'uv-grid' }, h('caption', { class: 'cb-vh' }, "IPMA's UV index forecast by place and day, with the band of each value as IPMA applies it."), head, body)),
       h('figcaption', {},
-        h('ul', { class: 'cb-legend', 'aria-label': 'WHO UV index bands' },
-          UV_BANDS.map((b, i) => h('li', {}, h('span', { class: `cb-sw uv-b${i + 1}` }), `${b.name} (${b.who_range})`))),
-        "Colour: the WHO UV index band; the value is written in every cell. IPMA gives the index with one decimal; values from 0 up to 3 count as Low, and the band edges are IPMA's (3, 6, 8, 11). Regions in IPMA's id order.")),
+        h('ul', { class: 'cb-legend', 'aria-label': 'UV index bands, as IPMA applies them' },
+          UV_BANDS.map((b, i) => h('li', {}, h('span', { class: `cb-sw uv-b${i + 1}` }), `${b.name} (IPMA: ${uvRange(b)})`))),
+        "Colour: the UV index band, with the band edges IPMA applies to its one-decimal values (3, 6, 8, 11; values below 3 count as Low); the value is written in every cell. Regions in IPMA's id order.")),
     h('p', { class: 'cb-note' },
       `${places.length} places with an id in IPMA's file, ${dates.length} days from ${fmtDay(dates[0])} to ${fmtDay(dates[dates.length - 1])}. Highest value shown: ${Number.isFinite(maxV) ? maxV : 'none'}.`,
       past ? ` ${past} day${past === 1 ? '' : 's'} before today (Lisbon date) ${past === 1 ? 'is' : 'are'} left out.` : '',

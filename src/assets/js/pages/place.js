@@ -192,18 +192,58 @@ function rWarnings(p, L, src) {
   if (st.level === 'old') body.push(h('p', { class: 'status warn' }, 'These warnings may have ended or changed: see ', h('a', { href: BY_KEY.warnings.page }, 'ipma.pt'), '.'));
   body.push(h('p', { class: 'note' }, h('a', { href: '/warnings/' }, 'All warnings on the map'),
     '. MeteoAlarm relays the same IPMA warnings in English; this card does not match its areas to towns, so see them on the ', h('a', { href: '/warnings/' }, 'warnings page'), ' or at ', h('a', { href: 'https://www.meteoalarm.org/' }, 'meteoalarm.org'), '.'));
-  // Summary clause.
-  const nowW = live.filter(w => w.start <= now);
-  let clause;
-  if (nowW.length) {
-    const top = nowW.reduce((a, b) => (['yellow', 'orange', 'red'].indexOf(b.level) > ['yellow', 'orange', 'red'].indexOf(a.level) ? b : a));
-    const types = [...new Set(nowW.filter(w => w.level === top.level).map(w => w.type || w.type_pt))].join(' and ');
-    const end = nowW.filter(w => w.level === top.level).map(w => w.end).sort().pop();
-    clause = `${levelWord(top.level)} warning for ${types} until ${end.slice(0, 10) === now.slice(0, 10) ? end.slice(11, 16) + ' today' : fmtPT(end)} (Portugal time).`;
-  } else if (live.length) {
-    clause = `No warning in force now; ${live[0].level} warning for ${live[0].type || live[0].type_pt} from ${fmtPT(live[0].start)} (Portugal time).`;
-  } else clause = 'No yellow, orange or red warning in IPMA\'s file.';
+  // Summary clause (warningClause below): each type with its own end, and a higher level later.
+  const clause = warningClause(live, now);
   return { body, clause, how: `${plural(live.length, 'spell')} in force or upcoming for ${p.area}` };
+}
+
+// The warnings sentence of the summary, from the spells in IPMA's file only (live: spells not yet
+// ended, sorted by start). Each type in force now gets its own level and end; when a later spell of
+// that type has a higher level, it is named too ("then orange until ..." when it follows on, or
+// "orange from ... to ..." when it does not). A type not in force now is named when its highest
+// later level is above every level in force now. Times are as IPMA gives them (Portugal time).
+const RANK = { yellow: 1, orange: 2, red: 3 };
+const rank = l => RANK[l] || 0;
+function warningClause(live, now) {
+  if (!live.length) return 'No yellow, orange or red warning in IPMA\'s file.';
+  const t0 = now.slice(0, 10);
+  const at = t => t.slice(0, 10) === t0 ? `${t.slice(11, 16)} today` : fmtPT(t);
+  const typeOf = w => w.type || w.type_pt || 'a type not given';
+  const types = [...new Set(live.map(typeOf))];
+  const inForce = live.filter(w => w.start <= now);
+  const topNow = Math.max(0, ...inForce.map(w => rank(w.level)));
+  const parts = [];
+  for (const ty of types) {
+    const spells = live.filter(w => typeOf(w) === ty);
+    const cur = spells.filter(w => w.start <= now);
+    const later = spells.filter(w => w.start > now);
+    if (cur.length) {
+      const r = Math.max(...cur.map(w => rank(w.level)));
+      const c = cur.filter(w => rank(w.level) === r).sort((a, b) => b.end.localeCompare(a.end))[0];
+      const hi = later.filter(w => rank(w.level) > r).sort((a, b) => rank(b.level) - rank(a.level) || a.start.localeCompare(b.start))[0];
+      // Does the higher spell follow on without a gap (through spells of this type at level r or more)?
+      let reach = c.end;
+      for (const w of later) { if (w === hi || w.start > reach) break; if (rank(w.level) >= r && w.end > reach) reach = w.end; }
+      let txt;
+      if (!hi) txt = `${c.level} for ${ty} until ${at(c.end)}`;
+      else if (hi.start <= reach) txt = `${c.level} for ${ty} until ${at(hi.start)}, then ${hi.level} until ${at(hi.end)}`;
+      else txt = `${c.level} for ${ty} until ${at(c.end)}, and ${hi.level} from ${at(hi.start)} to ${at(hi.end)}`;
+      parts.push({ order: 0, start: c.start, txt });
+    } else {
+      const hi = later.slice().sort((a, b) => rank(b.level) - rank(a.level) || a.start.localeCompare(b.start))[0];
+      if (hi && (rank(hi.level) > topNow || !inForce.length)) parts.push({ order: 1, start: hi.start, txt: `${hi.level} for ${ty} from ${at(hi.start)} to ${at(hi.end)}` });
+    }
+  }
+  parts.sort((a, b) => a.order - b.order || a.start.localeCompare(b.start));
+  const nowParts = parts.filter(x => x.order === 0).map(x => x.txt);
+  const laterParts = parts.filter(x => x.order === 1).map(x => x.txt);
+  const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+  let out;
+  if (nowParts.length) {
+    out = `Warnings in force: ${nowParts.join('; ')}`;
+    if (laterParts.length) out += `; later: ${laterParts.join('; ')}`;
+  } else out = `No warning in force now; later: ${laterParts.join('; ')}`;
+  return `${cap(out)} (Portugal time).`;
 }
 
 // One temperature scale for all 35 places in the file, so two towns compare by eye.
@@ -311,6 +351,9 @@ function rSea(p, L) {
   return { body, clause: d0 && isNum(d0.sea_max_m) ? `Sea at ${f.coast.name}: up to ${d0.sea_max_m} m.` : null, how };
 }
 
+// A UV band's range as IPMA applies it to one-decimal values (codes.js: min inclusive, max exclusive):
+// "below 3", "3 to below 6", "11 and above". Not WHO's whole-number ranges, which a decimal can contradict.
+const uvRange = b => b.min <= 0 ? `below ${b.max}` : Number.isFinite(b.max) ? `${b.min} to below ${b.max}` : `${b.min} and above`;
 const uvTile = v => {
   const b = uvBand(v);
   return h('span', { class: `pc-uv pc-uv-b${b ? UV_BANDS.indexOf(b) + 1 : 0}` }, isNum(v) ? String(v) : 'no value', b ? vh(` ${b.name}`) : null);
@@ -333,7 +376,7 @@ function rUV(p, L) {
   const b0 = t0.length === 1 ? uvBand(t0[0]) : null;
   body.push(h('div', { class: 'pc-uv-now' }, h('span', { class: 'pc-uv-day' }, dayLabel(cur[0])),
     h('span', { class: 'pc-uv-big' }, t0.map(uvTile)),
-    b0 ? h('span', {}, b0.name, h('span', { class: 'muted' }, ` (WHO band ${b0.who_range})`)) : t0.length > 1 ? h('span', { class: 'muted' }, `IPMA gives ${t0.length} values for this day; both are shown.`) : null));
+    b0 ? h('span', {}, b0.name, h('span', { class: 'muted' }, ` (IPMA: ${uvRange(b0)})`)) : t0.length > 1 ? h('span', { class: 'muted' }, `IPMA gives ${t0.length} values for this day; both are shown.`) : null));
   if (cur.length > 1) body.push(h('ul', { class: 'pc-uv-next' }, cur.slice(1).map(d => h('li', {}, h('span', { class: 'muted' }, fmtDay(d)), h('span', { class: 'pc-uv-split' }, vals(d).map(uvTile))))));
   if (dates.length > cur.length) body.push(h('p', { class: 'note' }, `${plural(dates.length - cur.length, 'day')} before today not shown.`));
   const clause = t0.length === 1 && isNum(t0[0]) ? `UV ${t0[0]}${b0 ? ` (${b0.name.toLowerCase()})` : ''}${f.exact ? '' : ` for ${f.place.name}`}.` : null;
@@ -407,10 +450,20 @@ function updateBand() {
   els.band.replaceChildren(el);
 }
 
+const FILE_WORD = { warnings: 'warnings', forecasts: 'forecast', observations: 'stations', uv: 'UV', fire: 'fire-risk' };
+function aged(key, clause) {
+  if (!clause) return clause;
+  const st = sourceState(res[key]);
+  if (st.level !== 'stale' && st.level !== 'old') return clause;
+  return `${clause.replace(/\.$/, '')}, from a ${FILE_WORD[key]} file read ${st.ago} (${st.level}).`;
+}
+
 function finish() {
   if (!els || !current) return;
   // Summary: only from values on the card; a block without a value gives its reason instead.
-  const parts = ['warnings', 'forecasts', 'observations', 'uv', 'fire'].map(k => outcome[k]?.clause).filter(Boolean);
+  // A clause from a stale or old file carries that file's age and state word, as its block does,
+  // so the line never repeats such figures as current.
+  const parts = ['warnings', 'forecasts', 'observations', 'uv', 'fire'].map(k => aged(k, outcome[k]?.clause)).filter(Boolean);
   els.summary.textContent = `${current.name}: ${parts.join(' ')}`;
   els.terms.replaceChildren(termsBlock(SOURCES.map(S => res[S.key] || { id: S.id })));
   howTable();

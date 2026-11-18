@@ -109,6 +109,29 @@ function barChart(G, counts) {
     h('figcaption', {}, `${counts.files ?? 'An unknown number of'} files${Number.isFinite(counts.bytes) ? `, ${MB(counts.bytes)}` : ''}${Number.isFinite(counts.datasets) ? ` in ${counts.datasets} datasets` : ''}; ${counts.verified ?? 'an unknown number'} verified (the sha256 of the bytes received matched the storm site's catalogue). Bars: bytes per group, on one scale; the groups are the first part of each dataset's name.`));
 }
 
+// ---------- "What is in it": the datasets by group, from the live file ----------
+// Added by developer.weather-demo@AgentiCCells.dinis (instance A), 2026-11-18, round 1 fixes (review
+// S2): the table was static HTML; now every count comes from latest.json as read, and when the read
+// fails nothing stands in its place. The last column is the writer's note per group, kept in the
+// page's <template id="storm-group-notes">, in the writer's order; a group without a note says so.
+const fmtN = n => Number(n).toLocaleString('en-GB');
+function groupTable(el, G, L) {
+  const notes = [...(document.getElementById('storm-group-notes')?.content.querySelectorAll('p[data-group]') || [])];
+  const note = Object.fromEntries(notes.map(p => [p.dataset.group, p.textContent.trim()]));
+  const order = notes.map(p => p.dataset.group);
+  const pos = g => { const i = order.indexOf(g); return i < 0 ? order.length : i; };
+  const rows = G.slice().sort((a, b) => pos(a.name) - pos(b.name) || b.bytes - a.bytes);
+  put(el, h('table', {},
+    h('caption', {}, "The archive's datasets, grouped by the first part of their name. Counts and sizes from ", h('code', {}, 'latest.json'),
+      `, read live by your browser (the archive itself was read on ${L.read_at ? when(L.read_at) : 'a date the file does not give'}).`),
+    h('thead', {}, h('tr', {}, h('th', { scope: 'col' }, 'Group'), h('th', { scope: 'col', class: 'num' }, 'Datasets'), h('th', { scope: 'col', class: 'num' }, 'Files'),
+      h('th', { scope: 'col', class: 'num' }, 'Bytes'), h('th', { scope: 'col' }, 'What the file notes say it holds'))),
+    h('tbody', {}, rows.map(g => h('tr', {}, h('td', {}, g.name),
+      h('td', { class: 'num' }, String(new Set(g.files.map(f => f.dataset).filter(Boolean)).size)),
+      h('td', { class: 'num' }, String(g.files.length)), h('td', { class: 'num' }, fmtN(g.bytes)),
+      h('td', {}, note[g.name] || h('span', { class: 'muted' }, 'No note on this page for this group: see the files\' own notes below.')))))));
+}
+
 // ---------- the file list ----------
 function fileList(G) {
   return G.map(g => {
@@ -142,18 +165,26 @@ function sourceBox(src) {
 async function main() {
   const el = document.getElementById('storm-live');
   if (!el) return;
+  const gEl = document.getElementById('storm-groups');
   const slow = loading(el, 'the Storm Charles archive');
-  const src = await loadSource(ID, { onSlow: slow });
+  const slowG = gEl ? loading(gEl, "the archive's datasets") : () => {};
+  const src = await loadSource(ID, { onSlow: () => { slow(); slowG(); } });
   if (!src.latest.ok) {
     failure(el, WHAT, src.latest, STORM_SITE, { pageLabel: 'The storm site keeps its own copy:' });
+    if (gEl) failure(gEl, WHAT, src.latest, STORM_SITE, { pageLabel: 'The storm site keeps its own copy:' });
     el.append(sourceBox(src));
     return;
   }
   const L = src.latest.data;
   const files = Array.isArray(L.files) ? L.files : [];
-  if (!files.length) { put(el, h('p', { class: 'status' }, "The archive's file was read but lists no files, so there is nothing to draw."), sourceBox(src)); return; }
+  if (!files.length) {
+    const none = () => h('p', { class: 'status' }, "The archive's file was read but lists no files, so there is nothing to draw.");
+    if (gEl) put(gEl, none());
+    put(el, none(), sourceBox(src)); return;
+  }
   const counts = L.counts || {};
   const G = groups(files);
+  if (gEl) groupTable(gEl, G, L);
   const tl = h('div');
   put(el,
     h('p', { class: 'storm-badge' }, h('strong', {}, 'Archive'), ` · fixed on ${L.read_at ? when(L.read_at) : 'a date not in the file'}`,
@@ -172,4 +203,6 @@ async function main() {
 main().catch(e => {
   const el = document.getElementById('storm-live');
   if (el) failure(el, WHAT, { error: `the page could not draw the file (${e.message})` }, STORM_SITE, { pageLabel: 'The storm site keeps its own copy:' });
+  const gEl = document.getElementById('storm-groups');
+  if (gEl) failure(gEl, WHAT, { error: `the page could not draw the file (${e.message})` }, STORM_SITE, { pageLabel: 'The storm site keeps its own copy:' });
 });

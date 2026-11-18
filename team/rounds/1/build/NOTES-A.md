@@ -30,3 +30,34 @@ Reused: map.js (`warningsBlock`, `warningTable`, `levelsFor`, `warningWindows`, 
 - The storm row's "10 to 12 November 2026" comes from the analyst's notes and the storm page, not from the archive file.
 - Links to /warnings/, /forecasts/, /observations/, /fire-risk/, /sea/, /uv/ depend on instance B's pages; validate passed at the time of the check.
 - Not done: "Use my location" (D3: no), per-town static pages (D1: not this round).
+
+## Fixes after review
+
+By developer.weather-demo@AgentiCCells.dinis (instance A), 18 November 2026, about 16:55 to 17:10 UTC (session clock), from the reviewer's findings in team/rounds/1/review/BUILD.md and the conductor's brief for the fixes. Not committed.
+
+### What changed
+
+- **M1, warnings clause** (`src/assets/js/pages/place.js`, new `warningClause()`). Built from the spells in IPMA's file only. Each type in force now gets its own level and end. When a later spell of that type has a higher level, it is named: "then orange until ..." when it follows on with no gap (the yellow end is then given as the orange start), or "and orange from ... to ..." when there is a gap. A type not in force now is named only when its highest later level is above every level in force now. Nothing in force: the first and highest later spells per type. Times as IPMA gives them (Portugal time).
+- **M2, stale and old files in the summary** (`finish()`, new `aged()`). A clause from a file whose `sourceState()` is stale or old keeps its figures but carries the file's age and the same state word as its block, for example "Today 12.4 to 20.7 °C, rain 6%, from a forecast file read 31 h ago (old)." Applies to warnings, forecast, stations, UV and fire risk. Failed files keep "... not read." data.js is unchanged.
+- **S1, UV label.** The place card says "Low (IPMA: below 3)" (bands from codes.js, min inclusive, max exclusive), not a WHO range. /uv/: legend "Low (IPMA: below 3)" to "Extreme (IPMA: 11 and above)", the caption, legend label and note now speak of the bands as IPMA applies them, and the page's meta description no longer says "WHO bands". codes.js is unchanged.
+- **S2, /storm-charles/ "What is in it".** The static table is gone from `src/storm-charles/index.html`. `storm.js` (`groupTable()`) draws it from `storm-charles-archive/latest.json` as read (datasets, files, bytes per group, and the archive's read time in the caption). If the read fails, the table area shows the failure message and nothing else. The writer's per-group descriptions are kept word for word in a `<template id="storm-group-notes">` and fill the last column; a group with no note says so. In `index.md` the table keeps the writer's descriptions but drops the copied counts and points to `files[]` in latest.json. Only the table was changed in src/storm-charles/; the writer's other words (including the "How much" bullet's totals) are untouched, for the writer to judge.
+- **S4, home sea headline.** Names every coast at the maximum, separated by semicolons, or "N coasts" when more than three.
+- **S7, home MeteoAlarm row.** Prints "MeteoAlarm's disclaimer: " and the `attribution.disclaimer` text from meteoalarm-pt latest.json as given (two sentences), or says it was not in the file; the link to the warnings page stays.
+
+### How it was checked
+
+- `node scripts/build.mjs`, `node scripts/validate.mjs` (OK), `node scripts/leak-scan.mjs` (OK), `node --test tests/*.test.mjs` (25 pass, 0 fail).
+- Headless Chromium (Playwright) on `python3 -m http.server` serving `_site/`, at about 17:00 UTC, against the live files (ipma-warnings read_at 2026-11-18T16:32:26Z):
+  - Aveiro: "Warnings in force: yellow for rough sea until 18:00 today, then orange until Fri 20 Nov 00:00 (Portugal time)." The file has AVR yellow rough sea 13:15 to 18:00, orange 18:00 to 20 Nov 00:00.
+  - Lisboa: "Warnings in force: yellow for rough sea until Thu 19 Nov 06:00, then orange until Thu 19 Nov 12:00; yellow for rain until 18:00 today (Portugal time)." The file has LSB yellow rough sea to 19 Nov 06:00, yellow rain to 18:00, orange rough sea 19 Nov 06:00 to 12:00.
+  - Bragança: "No yellow, orange or red warning in IPMA's file." Faro: one type, one end.
+  - M2 via `page.route`: Faro and Aveiro with ipma-city-forecasts and ipma-fire-risk `read_at` moved 30 h back and their dates one day back: both clauses carry "from a ... file read 31 h ago (old)", matching the two blocks marked old. Warnings and UV 30 h old: same for those two clauses. Observations 5 h old: "(stale)".
+  - UV: Lisboa, Faro and Bragança show "Low (IPMA: below 3)"; /uv/ legend as above.
+  - Home: "12 coasts; highest total sea today up to 5 m (Figueira da Foz, Costa; Porto, costa; Viana do Castelo, costa)." (ipma-sea read_at 16:32:14Z: those three at 5 m). MeteoAlarm row shows the disclaimer as the file gives it.
+  - /storm-charles/: live, the table matches the file (weather 12 datasets, 12 files, 796,181 bytes; flights 6, 91, 3,557,635). With latest.json aborted: the failure message in the table's place and no table on the page.
+  - No page errors in any run.
+
+### Open
+
+- `scripts/cards.mjs` (the /uv/ share card text) still says "in the WHO bands"; it is outside this brief's paths (src/** only), so it is left for the conductor.
+- The storm page's "How much" bullet and its index.md twin still give the archive's totals as text; that is the writer's copy, outside the table.
