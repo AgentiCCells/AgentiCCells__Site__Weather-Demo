@@ -62,3 +62,6 @@ body.d-workbench{--bg:#f4f6f4;--panel:#ffffff;--ink:#1a1f1c;--muted:#56615a;--li
   .wb-copy button{width:100%}
   .wb-paths tr{padding:.35rem 0}
 }
+
+/* conductor.weather-demo@, round 2 re-check R1. */
+.wb-main{min-width:0}

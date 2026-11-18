@@ -346,3 +346,6 @@ details.fold>summary .muted{font-weight:400}
 .hl-fresh{color:var(--fresh)} .hl-stale,.hl-unknown{color:var(--stale)} .hl-old,.hl-missing{color:var(--old)} .hl-reading,.hl-slow,.hl-archive{color:var(--muted)}
 .heads p{margin:.15rem 0}
 .heads .provline{margin-top:.25rem}
+
+/* conductor.weather-demo@, round 2 re-check R1: a one-column grid must not grow to a wide pre or table inside a fold. */
+.card-col{min-width:0}
