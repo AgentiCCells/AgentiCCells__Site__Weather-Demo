@@ -1,0 +1,11 @@
+{
+  "schema": "hub.json (draft)",
+  "name": "Weather, from our data",
+  "what_it_does": "A demonstration site: Portugal's weather from the public data PrompTugal.news collects, how it was built by an agentic team, and how to use the raw data.",
+  "owner": "AgentiCCells",
+  "team": "factory@AgentiCCells.dinis, instructed by Dinis Cruz",
+  "licence": { "code": "Apache-2.0", "text": "CC BY 4.0" },
+  "repository": "https://github.com/AgentiCCells/AgentiCCells__Site__Weather-Demo",
+  "live_address": "https://weather-demo.agenticcells.site",
+  "version_from": "https://weather-demo.agenticcells.site/version.json"
+}
