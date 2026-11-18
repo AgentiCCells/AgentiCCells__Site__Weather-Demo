@@ -1,0 +1,66 @@
+/* two-towns.css: the Two towns design (team/rounds/2/design/PROPOSAL.md sections 5 and 8).
+   Each row is its own grid with the same columns, so the same block lines up across towns.
+   Only surface tokens are set here; level, RCM and UV colours come from site.css.
+   Code Apache-2.0. developer.weather-demo@AgentiCCells.dinis (instance C), 2026-11-18, round 2. */
+body.d-two-towns{
+  --bg:#fafafa; --panel:#ffffff; --ink:#1b1b1f; --muted:#5d5d66; --accent:#2b4c9b; --line:#c8c8cf; --accent-ink:#ffffff;
+  --fresh:#24663f; --stale:#8a4f00; --old:#a3221b;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) body.d-two-towns{
+  --bg:#141418; --panel:#1e1e24; --ink:#ececf1; --muted:#a3a3ad; --accent:#93acf0; --line:#33333c; --accent-ink:#141418;
+  --fresh:#6cc48f; --stale:#e0a24a; --old:#ff8a80;
+}}
+:root[data-theme="dark"] body.d-two-towns{
+  --bg:#141418; --panel:#1e1e24; --ink:#ececf1; --muted:#a3a3ad; --accent:#93acf0; --line:#33333c; --accent-ink:#141418;
+  --fresh:#6cc48f; --stale:#e0a24a; --old:#ff8a80;
+}
+body.d-two-towns main{max-width:84rem}
+.d-kicker{font-size:.9rem;color:var(--muted);margin:0 0 .8rem}
+.d-back{font-size:.92rem;margin:2rem 0 0}
+.d-two-towns h1:focus{outline:none} .d-two-towns h1:focus-visible{outline:3px solid var(--accent)}
+.tw-msg{margin:0 0 .5rem;max-width:52rem}
+.tw-add{display:flex;flex-wrap:wrap;gap:.4rem .6rem;align-items:center;margin:.6rem 0 1rem}
+.tw-add label{font-weight:600}
+.tw-add select{font:inherit;padding:.35rem .5rem;border:1px solid var(--muted);border-radius:6px;background:var(--panel);color:var(--ink);max-width:100%;min-height:2.4rem}
+.tw-btn{font:inherit;font-size:.9rem;padding:.3rem .8rem;border:1px solid var(--accent);border-radius:6px;background:var(--panel);color:var(--accent);cursor:pointer;min-height:2.4rem}
+.tw-btn-main{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.tw-btn:disabled{border-color:var(--line);color:var(--muted);background:var(--bg);cursor:not-allowed}
+.tw-full{font-size:.88rem}
+.tw-grid{font-variant-numeric:tabular-nums}
+.tw-row{display:grid;grid-template-columns:9rem repeat(var(--n),minmax(0,1fr));gap:0 1.2rem;padding:.9rem 0;border-top:1px solid var(--line);min-width:0}
+.tw-row.blk-stale,.tw-row.blk-old,.tw-row.blk-missing{padding-left:.8rem}
+.tw-cells{display:contents}
+.tw-label{grid-column:1;min-width:0}
+.tw-label h3{margin:0;font-size:1.05rem}
+.tw-label h3:focus{outline:none} .tw-label h3:focus-visible{outline:3px solid var(--accent)}
+.tw-state{display:block;font-size:.85rem;margin-top:.2rem}
+.tw-cell{min-width:0;font-size:.95rem}
+.tw-cell p{margin:.3rem 0}
+.tw-span{grid-column:2/-1}
+.tw-prov{grid-column:2/-1;min-width:0}
+.tw-town{margin:0 0 .3rem;font-size:1rem}
+.tw-heads{border-top:0;position:relative}
+.tw-head h2{margin:0;font-size:1.3rem}
+.tw-head p{margin:.15rem 0}
+.tw-acts{display:flex;flex-wrap:wrap;gap:.4rem .8rem;align-items:center;margin-top:.4rem!important}
+.tw-summary{font-size:1rem}
+/* the forecast keeps the row form (one row per day) in every cell, so the same day lines up */
+.tw-cell .pc-days{grid-template-columns:minmax(0,1fr);gap:.1rem}
+.tw-cell .pc-day{display:grid;flex-direction:row;align-items:center;grid-template-columns:4.2rem minmax(0,1fr) auto;grid-template-areas:"d bar t" "d wx rain" "d wind wind";gap:.1rem .6rem;padding:.35rem 0;border-top:1px solid var(--line)}
+.tw-cell .pc-day:first-child{border-top:0}
+.tw-cell .pc-t{text-align:right;white-space:nowrap}
+.tw-cell .pc-rain{justify-content:flex-end;white-space:nowrap}
+.tw-cell .pc-strip{gap:.2rem}
+.tw-cell .pc-strip li{padding:.3rem .25rem;font-size:.82rem}
+.pc-terms{margin:1.5rem 0}
+@media (min-width:760px){
+  .tw-town{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+}
+@media (max-width:759px){
+  .tw-row{grid-template-columns:minmax(0,1fr);gap:.5rem}
+  .tw-span,.tw-prov,.tw-label{grid-column:1}
+  .tw-cell{border-top:1px dashed var(--line);padding-top:.5rem}
+  .tw-heads .tw-label{display:none}
+  .tw-heads .tw-cell{border-top:0;border-bottom:1px solid var(--line);padding:0 0 .5rem}
+  .tw-label h3{font-size:1.2rem}
+}

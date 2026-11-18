@@ -1,0 +1,88 @@
+/* postcard.css: the Postcard design (team/rounds/2/design/PROPOSAL.md sections 3 and 8).
+   Only surface tokens are set here; level, RCM and UV colours come from site.css.
+   Code Apache-2.0. developer.weather-demo@AgentiCCells.dinis (instance C), 2026-11-18, round 2. */
+body.d-postcard{
+  --bg:#f3ede2; --panel:#fffdf8; --ink:#2a2420; --muted:#6b5f55; --accent:#2d4f86; --line:#ddd3c4; --accent-ink:#ffffff;
+  --fresh:#24663f; --stale:#8a4f00; --old:#a3221b;
+  --serif:Charter,"Iowan Old Style",Georgia,serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) body.d-postcard{
+  --bg:#1c1714; --panel:#26201b; --ink:#f1e9df; --muted:#b8aa9c; --accent:#a9bff0; --line:#3a312a; --accent-ink:#1c1714;
+  --fresh:#6cc48f; --stale:#e0a24a; --old:#ff8a80;
+}}
+:root[data-theme="dark"] body.d-postcard{
+  --bg:#1c1714; --panel:#26201b; --ink:#f1e9df; --muted:#b8aa9c; --accent:#a9bff0; --line:#3a312a; --accent-ink:#1c1714;
+  --fresh:#6cc48f; --stale:#e0a24a; --old:#ff8a80;
+}
+body.d-postcard main{max-width:62rem}
+.d-kicker{font-size:.9rem;color:var(--muted);margin:0 0 .8rem}
+.d-back{font-size:.92rem;margin:2rem 0 0}
+.d-postcard .status{max-width:52rem}
+.pcp-pick{display:flex;flex-wrap:wrap;gap:.4rem .6rem;align-items:center;margin:0 0 .6rem}
+.pcp-pick label{font-weight:600}
+.pcp-pick select{font:inherit;padding:.35rem .5rem;border:1px solid var(--muted);border-radius:6px;background:var(--panel);color:var(--ink);max-width:100%;min-height:2.4rem}
+.pcp-btn{font:inherit;font-size:.92rem;padding:.35rem .9rem;border:1px solid var(--accent);border-radius:6px;background:var(--panel);color:var(--accent);cursor:pointer;min-height:2.4rem}
+.pcp-btn:hover{background:var(--accent);color:var(--accent-ink)}
+.pcp-turn{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.pcp-turnrow{margin:.6rem 0}
+.pcp-card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:2rem;min-width:0}
+.pcp-card h1{font-family:var(--serif);margin:0 0 .2rem}
+.pcp-card h1:focus{outline:none} .pcp-card h1:focus-visible{outline:3px solid var(--accent)}
+.pcp-card h2{font-family:var(--serif)}
+.pcp-date{margin:0 0 .6rem;color:var(--muted)}
+.pcp-message{font-family:var(--serif);font-size:1.25rem;line-height:1.45;margin:.4rem 0 1rem;padding-left:1rem;border-left:4px solid var(--accent)}
+.pcp-card,.pcp-card table,.pcp-facts{font-variant-numeric:tabular-nums}
+/* front: message, warnings and forecast left; stamp, postmark and facts right */
+.pcp-front{display:grid;grid-template-columns:minmax(0,3fr) minmax(16rem,2fr);grid-template-areas:"head stamp" "msg stamp" "msg post" "warn side" "fc side";grid-template-rows:auto auto 1fr auto auto;align-items:start}
+.pcp-head{grid-area:head} .pcp-msgwrap{grid-area:msg} .pcp-warn{grid-area:warn} .pcp-fc{grid-area:fc}
+.pcp-stamp{grid-area:stamp} .pcp-postmark{grid-area:post} .pcp-side{grid-area:side}
+.pcp-head,.pcp-msgwrap,.pcp-warn,.pcp-fc{padding-right:1.5rem;min-width:0}
+.pcp-stamp,.pcp-postmark,.pcp-side{margin-left:1.5rem;min-width:0}
+.pcp-front::before{content:"";grid-column:2;grid-row:1/-1;border-left:1px solid var(--line);justify-self:start;align-self:stretch}
+.pcp-stamp{justify-self:end;width:11rem;border:2px dashed var(--accent);padding:.6rem .7rem;text-align:center}
+.pcp-stamp p{margin:0}
+.pcp-stamp-h{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.pcp-stamp-l{display:flex;flex-direction:column;align-items:center;gap:.3rem;margin:.3rem 0 !important;font-size:1.05rem}
+.pcp-stamp .sw{width:2rem;height:1.5rem}
+.pcp-area{display:block;font-size:.8rem;color:var(--muted)}
+.pcp-postmark{justify-self:end;margin-top:.8rem;margin-right:2.5rem}
+.pcp-pm{width:6rem;height:6rem;border:2px solid var(--accent);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:.8rem;line-height:1.25;color:var(--muted);margin:0;transform:rotate(-8deg)}
+.pcp-pm strong{color:var(--ink)}
+.pcp-pm-stale strong{color:var(--stale)} .pcp-pm-old strong,.pcp-pm-missing{color:var(--old)}
+.pcp-facts-h{margin:1rem 0 .2rem;font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.pcp-facts{list-style:none;margin:0;padding:0;font-size:.95rem}
+.pcp-facts li{padding:.45rem 0;border-top:1px solid var(--line)}
+.pcp-facts a{text-decoration-thickness:1px;text-underline-offset:2px}
+.pcp-facts a strong{color:var(--ink)}
+.pcp-blk{border-top:1px solid var(--line);padding:.9rem 0 0;margin:0 0 1rem;min-width:0}
+.pcp-blk>h2{margin:0 0 .5rem;font-size:1.2rem}
+.pcp-blk>h2:focus{outline:none} .pcp-blk>h2:focus-visible{outline:3px solid var(--accent)}
+.pcp-blk.blk-stale,.pcp-blk.blk-old,.pcp-blk.blk-missing{padding-left:.8rem}
+.pcp-blk p{margin:.35rem 0}
+/* the forecast keeps the row form (one row per day) at every width: the left column is narrow */
+.pcp-fc .pc-days{grid-template-columns:minmax(0,1fr);gap:.1rem}
+.pcp-fc .pc-day{display:grid;flex-direction:row;align-items:center;grid-template-columns:4.2rem minmax(0,1fr) auto;grid-template-areas:"d bar t" "d wx rain" "d wind wind";gap:.1rem .6rem;padding:.35rem 0;border-top:1px solid var(--line)}
+.pcp-fc .pc-day:first-child{border-top:0}
+.pcp-fc .pc-t{text-align:right;white-space:nowrap}
+.pcp-fc .pc-rain{justify-content:flex-end;white-space:nowrap}
+/* back */
+.pcp-front[hidden],.pcp-back[hidden]{display:none}
+.pcp-back-h{margin:0 0 .6rem;font-size:1.5rem}
+.pcp-back-h:focus{outline:none} .pcp-back-h:focus-visible{outline:3px solid var(--accent)}
+.pcp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 1.5rem}
+.pcp-address{border:1px solid var(--line);border-radius:4px;padding:.6rem .9rem;margin:1rem 0;background:var(--bg)}
+.pcp-address p{margin:.2rem 0}
+.pcp-unknown{margin:0 0 .6rem}
+@media (max-width:759px){
+  .pcp-card{padding:1rem}
+  .pcp-front{grid-template-columns:minmax(0,1fr) 6.5rem;grid-template-areas:"head stamp" "msg msg" "warn warn" "fc fc" "side side" "post post"}
+  .pcp-front::before{display:none}
+  .pcp-head,.pcp-msgwrap,.pcp-warn,.pcp-fc{padding-right:0}
+  .pcp-head{padding-right:.6rem}
+  .pcp-stamp,.pcp-postmark,.pcp-side{margin-left:0}
+  .pcp-stamp{width:6.5rem;padding:.4rem .3rem}
+  .pcp-stamp-l{font-size:.92rem}
+  .pcp-postmark{justify-self:start;margin:1rem 0 0 .5rem}
+  .pcp-grid{grid-template-columns:minmax(0,1fr)}
+}
+@media (forced-colors:active){.pcp-stamp,.pcp-pm{border-color:CanvasText}}

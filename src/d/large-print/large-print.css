@@ -1,0 +1,60 @@
+/* large-print.css: the Large print design (team/rounds/2/design/PROPOSAL.md sections 7 and 8).
+   A 22 px base, one column, AAA contrast for text, 48 px targets, no hover-only states, no sticky
+   elements, no motion. Only surface tokens and status words are set; level, RCM and UV colours
+   come from site.css. Code Apache-2.0.
+   developer.weather-demo@AgentiCCells.dinis (instance C), 2026-11-18, round 2. */
+html.lp{font-size:137.5%}
+body.d-large-print{
+  font-size:22px;line-height:1.6;font-family:Verdana,"DejaVu Sans",system-ui,sans-serif;font-variant-numeric:tabular-nums;
+  --bg:#ffffff; --panel:#f2f2f2; --ink:#000000; --muted:#3d3d3d; --accent:#0040a0; --line:#595959; --accent-ink:#ffffff;
+  --fresh:#1b4d30; --stale:#6a3c00; --old:#86160f; --map-edge:#595959;
+  --font:Verdana,"DejaVu Sans",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) body.d-large-print{
+  --bg:#000000; --panel:#141414; --ink:#ffffff; --muted:#d0d0d0; --accent:#8ab4ff; --line:#a6a6a6; --accent-ink:#000000;
+  --fresh:#6cc48f; --stale:#e0a24a; --old:#ff8a80; --map-edge:#a6a6a6;
+}}
+:root[data-theme="dark"] body.d-large-print{
+  --bg:#000000; --panel:#141414; --ink:#ffffff; --muted:#d0d0d0; --accent:#8ab4ff; --line:#a6a6a6; --accent-ink:#000000;
+  --fresh:#6cc48f; --stale:#e0a24a; --old:#ff8a80; --map-edge:#a6a6a6;
+}
+body.d-large-print main{max-width:36rem}
+body.d-large-print :focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+body.d-large-print h1:focus,body.d-large-print h2:focus{outline:none}
+body.d-large-print h1:focus-visible,body.d-large-print h2:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+body.d-large-print h2{font-size:1.3rem;margin:1.6rem 0 .5rem}
+body.d-large-print main p,body.d-large-print main li{max-width:60ch}
+body.d-large-print .muted,body.d-large-print .note{color:var(--muted)}
+body.d-large-print .note,body.d-large-print .lp-note{font-size:.9em;margin:.4rem 0}
+body.d-large-print .designs-menu>summary,body.d-large-print .nav a{min-height:48px;display:inline-flex;align-items:center}
+.d-kicker{font-size:.9em;color:var(--muted);margin:0 0 .8rem}
+.d-back{font-size:.9em;margin:2rem 0 0}
+.lp-pick{display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;margin:.4rem 0 1rem}
+.lp-pick label{font-weight:700;width:100%}
+.lp-pick select{font:inherit;min-height:48px;padding:.3rem .6rem;border:2px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);max-width:100%}
+.lp-btn{font:inherit;font-weight:700;min-height:48px;min-width:48px;padding:.3rem 1.2rem;border:2px solid var(--accent);border-radius:6px;background:var(--accent);color:var(--accent-ink);cursor:pointer}
+.lp-sec{border-top:2px solid var(--line);margin:1.6rem 0 0;padding-top:.1rem;min-width:0}
+.lp-sec.blk-stale,.lp-sec.blk-old,.lp-sec.blk-missing{border-left:6px solid var(--stale);padding-left:.8rem}
+.lp-sec.blk-old,.lp-sec.blk-missing{border-left-color:var(--old)}
+.lp-short p{margin:.5rem 0}
+.lp-table{font-size:1em;margin:.4rem 0}
+.lp-table caption{font-size:.9em;color:var(--muted)}
+.lp-table th,.lp-table td{border-bottom:1px solid var(--line);padding:.4rem .5rem}
+.lp-table th{color:var(--ink)}
+.lp-table thead th{color:var(--muted)}
+.lp-level{display:inline-flex;align-items:center;gap:.5rem;white-space:normal}
+.lp-level .sw,.lp-spell .sw{width:1.2em;height:.9em;flex:none}
+.lp-spell{display:flex;gap:.6rem;align-items:baseline}
+.lp-text summary{min-height:48px;display:flex;align-items:center}
+.lp-big{font-size:1.2em;font-weight:700}
+.lp-list{padding-left:1.2em}
+.lp-prov .provline{font-size:.9em;color:var(--muted)}
+body.d-large-print .pc-dl{font-size:1em}
+body.d-large-print .pc-fire-next,body.d-large-print .pc-uv-next{font-size:1em;flex-direction:column}
+body.d-large-print .pc-storm{margin:1.6rem 0}
+body.d-large-print .terms p{font-size:.9em}
+body.d-large-print .status{color:var(--ink)}
+@media (max-width:600px){
+  .lp-table th[scope="row"]{font-weight:700;padding-top:.5rem}
+  body.d-large-print table.stack td[data-label]::before{font-size:.9em;color:var(--muted)}
+}
