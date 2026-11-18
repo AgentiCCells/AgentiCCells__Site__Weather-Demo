@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Warnings | Weather, from our data</title>
+<meta name="description" content="IPMA's yellow, orange and red weather warnings for Portugal's 25 warning areas on a map and a timeline, with the towns in each area and each warning's text, read live from data.promptugal.news, and MeteoAlarm's feed as context. Not a warning service.">
+<meta name="share-image" content="/assets/share/warnings.png">
+<!--HEAD-->
+<link rel="stylesheet" href="/assets/charts.css">
+<!-- Page adapted from AgentiCCells/AgentiCCells__Site__IPMA-Data, src/warnings/index.html (commit 24e3d74), Apache-2.0 for code and CC BY 4.0 for text, same organisation, by developer.weather-demo@AgentiCCells.dinis (instance B), 2026-11-18, round 1. -->
+</head>
+<body data-sources="ipma-warnings ipma-fire-risk meteoalarm-pt">
+<!--HEADER-->
+<main id="main" class="wrap">
+<h1>Warnings</h1>
+<p class="lede">IPMA issues weather warnings for the 18 mainland districts, four areas of Madeira and the three island groups of the Azores, at four levels: green, yellow, orange and red. This page draws the warnings in PrompTugal.news's latest copy of IPMA's file. It can be behind IPMA: check <a href="https://www.ipma.pt/en/otempo/prev-sam/">ipma.pt</a> before acting on anything.</p>
+<p class="note">Choose an area on the map to see its warnings and the towns in it; each town opens in <a href="/place/">Your town</a> with its forecast, nearest station, sea, UV and fire risk.</p>
+<noscript><p class="status fail">This page draws IPMA's data with JavaScript in your browser. Without it nothing can be shown here. The file is at <a href="https://data.promptugal.news/api/v1/ipma-warnings/latest.json">data.promptugal.news</a>; IPMA's own page is <a href="https://www.ipma.pt/en/otempo/prev-sam/">ipma.pt</a>.</p></noscript>
+
+<section aria-labelledby="map-h">
+<h2 id="map-h">Warnings by area</h2>
+<div id="warnings-block"><p class="status loading">Reading IPMA's warnings from data.promptugal.news...</p></div>
+</section>
+
+<section aria-labelledby="tl-h">
+<h2 id="tl-h">Timeline of warnings</h2>
+<p class="note">One row per area and type of warning, in force now or later. IPMA's times are Portugal local time without a time zone, and are shown as IPMA gives them. The first spell of each warning starts at the time IPMA issued its file, not at the real onset.</p>
+<div id="timeline"><p class="status loading">Reading IPMA's warnings from data.promptugal.news...</p></div>
+</section>
+
+<section aria-labelledby="list-h">
+<h2 id="list-h" tabindex="-1">Every warning, with IPMA's text</h2>
+<div id="list"><p class="status loading">Reading IPMA's warnings from data.promptugal.news...</p></div>
+</section>
+
+<section aria-labelledby="runs-h">
+<h2 id="runs-h">When the collector read IPMA's file</h2>
+<p class="note">PrompTugal.news's collector logs each run in reads.json: whether the read worked and whether IPMA's file had changed. It holds no past warnings.</p>
+<div id="runs"><p class="status loading">Reading the collector's log from data.promptugal.news...</p></div>
+</section>
+
+<section aria-labelledby="meteoalarm-h">
+<h2 id="meteoalarm-h">Context: MeteoAlarm's feed for Portugal</h2>
+<p class="note">MeteoAlarm (EUMETNET) republishes Portugal's warnings as CAP messages. They come from IPMA, the national weather service, and are shown here as context beside IPMA's own file, not as a second source that confirms it. MeteoAlarm's times are UTC, and its own terms and disclaimer apply, as given below.</p>
+<div id="meteoalarm"><p class="status loading">Reading MeteoAlarm's feed from data.promptugal.news...</p></div>
+</section>
+</main>
+<!--FOOTER-->
+<script type="module" src="/assets/js/pages/warnings.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stations | Weather, from our data</title>
+<meta name="description" content="The latest hour's readings from IPMA's weather stations in mainland Portugal, Madeira and the Azores: temperature and wind on a map, and every measure in a sortable table with the towns each station is nearest to, read live from data.promptugal.news.">
+<meta name="share-image" content="/assets/share/observations.png">
+<!--HEAD-->
+<!-- Page adapted from AgentiCCells/AgentiCCells__Site__IPMA-Data, src/observations/index.html (commit 24e3d74), Apache-2.0 for code and CC BY 4.0 for text, same organisation, by developer.weather-demo@AgentiCCells.dinis (instance B), 2026-11-18, round 1. -->
+</head>
+<body data-sources="ipma-observations ipma-fire-risk">
+<!--HEADER-->
+<main id="main" class="wrap">
+<h1>Stations</h1>
+<p class="lede">IPMA's surface weather stations report every hour. This page shows the latest hour in PrompTugal.news's copy of IPMA's file: which stations reported, their temperature and wind on a map, and every measure in a table. Stations often report late, so the latest hour is the emptiest.</p>
+<noscript><p class="status fail">This page draws IPMA's data with JavaScript in your browser. Without it nothing can be shown here. The file is at <a href="https://data.promptugal.news/api/v1/ipma-observations/latest.json">data.promptugal.news</a>; IPMA's own page is <a href="https://www.ipma.pt/en/otempo/obs.superficie/">ipma.pt</a>.</p></noscript>
+
+<section aria-labelledby="map-h">
+<h2 id="map-h">The latest hour on the map</h2>
+<div id="obs"><p class="status loading">Reading IPMA's station readings from data.promptugal.news...</p></div>
+</section>
+
+<section aria-labelledby="tbl-h">
+<h2 id="tbl-h">Every station</h2>
+<p class="note">Choose a column heading to sort by it; choose it again to reverse. Missing values read "none" and sort last. "Nearest to" names the towns of <a href="/place/">Your town</a> for which this is the nearest station, by straight-line distance; where the nearest station sent nothing this hour, the town also names the nearest one that did ("nearest reporting").</p>
+<div id="table"><p class="status loading">Reading IPMA's station readings from data.promptugal.news...</p></div>
+</section>
+
+<section aria-labelledby="runs-h">
+<h2 id="runs-h">When the collector read IPMA's file</h2>
+<div id="runs"><p class="status loading">Reading the collector's log from data.promptugal.news...</p></div>
+</section>
+</main>
+<!--FOOTER-->
+<script type="module" src="/assets/js/pages/observations.js"></script>
+</body>
+</html>

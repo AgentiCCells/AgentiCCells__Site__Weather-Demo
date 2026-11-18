@@ -116,3 +116,25 @@ details.cb-more summary{cursor:pointer;color:var(--accent);font-weight:600}
 .uv-b4{background:var(--c-uv4);color:#fff}.uv-b5{background:var(--c-uv5);color:#fff}
 .uv-none{display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:.78rem;border:1px dashed var(--line);border-radius:4px}
 @media (forced-colors:active){.uv-v,.cb-sw{border-color:CanvasText}.fc-vbar,.fc-hbar,.fc-dot,.sea-bar.total{background:CanvasText}.sea-bar.swell{border-color:CanvasText}}
+
+/* Round 1 of AgentiCCells__Site__Weather-Demo, developer.weather-demo@AgentiCCells.dinis (instance B):
+   the town links on the source pages and the Storm Charles live view (pages/storm.js). */
+.towns{margin-top:.8rem;padding-top:.6rem;border-top:1px solid var(--line)}
+.towns h4{margin:0 0 .3rem;font-size:.95rem}
+.town-list{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.2rem .9rem}
+.sea-grid .sea-place small.sea-towns{margin-top:.2rem;color:var(--ink)}
+.storm-badge{display:inline-block;margin:.2rem 0 .6rem;padding:.3rem .7rem;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:.9rem}
+.storm-bars li{grid-template-columns:minmax(6rem,auto) minmax(2rem,1fr) minmax(7.5rem,auto)}
+.storm-bars .b{background:var(--muted);opacity:1}
+.storm-bars .num{white-space:nowrap}
+.storm-tl>svg{display:block;width:100%;height:auto}
+.storm-series{margin:.4rem 0;padding-left:1.2rem;font-size:.9rem}
+.storm-series li{margin:.15rem 0}
+details.storm-group{margin:.3rem 0;border-top:1px solid var(--line);padding:.3rem 0}
+details.storm-group>summary{font-weight:600}
+.storm-files{list-style:none;margin:.3rem 0 .4rem;padding:0;font-size:.88rem}
+.storm-files li{padding:.25rem 0;border-top:1px dashed var(--line);overflow-wrap:anywhere}
+.storm-files li:first-child{border-top:0}
+.storm-about{margin:.2rem 0 0 .8rem}
+.storm-about p{margin:.2rem 0;color:var(--muted)}
+@media (max-width:560px){.storm-bars li{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"lab num" "bar bar"}.storm-bars .lab{grid-area:lab}.storm-bars li>span[aria-hidden]{grid-area:bar}.storm-bars .num{grid-area:num}}

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fire risk | Weather, from our data</title>
+<meta name="description" content="IPMA's fire risk class (RCM, 1 low to 5 highest) for Portugal's 278 mainland municipalities, for three days, on a hex map with counts by class, the towns of this site by municipality and a table by district, read live from data.promptugal.news.">
+<meta name="share-image" content="/assets/share/fire-risk.png">
+<!--HEAD-->
+<!-- Page adapted from AgentiCCells/AgentiCCells__Site__IPMA-Data, src/fire-risk/index.html (commit 24e3d74), Apache-2.0 for code and CC BY 4.0 for text, same organisation, by developer.weather-demo@AgentiCCells.dinis (instance B), 2026-11-18, round 1. -->
+</head>
+<body data-sources="ipma-fire-risk">
+<!--HEADER-->
+<main id="main" class="wrap">
+<h1>Fire risk</h1>
+<p class="lede">IPMA's daily fire risk class (RCM, risco de incêndio rural) for each of the 278 mainland municipalities, for today and the next two days, on a scale of five classes from low to highest.</p>
+<p class="note">No fire-risk data for the islands: IPMA publishes no fire risk class for Madeira or the Azores.</p>
+<noscript><p class="status fail">This page draws IPMA's data with JavaScript in your browser. Without it nothing can be shown here. The file is at <a href="https://data.promptugal.news/api/v1/ipma-fire-risk/latest.json">data.promptugal.news</a>; IPMA's own page is <a href="https://www.ipma.pt/en/riscoincendio/rcm.pt/">ipma.pt</a>.</p></noscript>
+
+<section aria-labelledby="map-h">
+<h2 id="map-h">Municipalities by class</h2>
+<div id="fire"><p class="status loading">Reading IPMA's fire risk from data.promptugal.news...</p></div>
+</section>
+
+<section aria-labelledby="towns-h">
+<h2 id="towns-h">The towns of this site</h2>
+<p class="note">The municipality of each mainland town in <a href="/place/">Your town</a>, found by its DICO code: digits 2 to 5 of IPMA's place id. Where the town is not the seat of its municipality, it reads "municipality containing".</p>
+<div id="towns"><p class="status loading">Reading IPMA's fire risk from data.promptugal.news...</p></div>
+</section>
+
+<section aria-labelledby="tbl-h">
+<h2 id="tbl-h">By district</h2>
+<p class="note">IPMA's file names municipalities only by their DICO code (two digits for the district, two for the municipality); it has no names. Only the municipalities that hold a town of this site are named, from that town; the rest keep their code and district, never a guessed name. District names are IPMA's.</p>
+<div id="table"><p class="status loading">Reading IPMA's fire risk from data.promptugal.news...</p></div>
+</section>
+</main>
+<!--FOOTER-->
+<script type="module" src="/assets/js/pages/fire-risk.js"></script>
+</body>
+</html>

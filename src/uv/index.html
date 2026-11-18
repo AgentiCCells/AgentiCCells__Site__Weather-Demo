@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UV | Weather, from our data</title>
+<meta name="description" content="IPMA's UV index forecast by place and day for mainland Portugal, Madeira and the Azores, coloured by the WHO bands with the value written in every cell, each place linking to its town, drawn live from data.promptugal.news.">
+<meta name="share-image" content="/assets/share/uv.png">
+<!--HEAD-->
+<!-- Page adapted from AgentiCCells/AgentiCCells__Site__IPMA-Data, src/uv/index.html (commit 24e3d74), Apache-2.0 for code and CC BY 4.0 for text, same organisation, by developer.weather-demo@AgentiCCells.dinis (instance B), 2026-11-18, round 1. -->
+<link rel="stylesheet" href="/assets/charts.css">
+<script type="module" src="/assets/js/pages/uv.js"></script>
+</head>
+<body data-sources="ipma-uv">
+<!--HEADER-->
+<main id="main" class="wrap">
+<h1>UV index by place and day</h1>
+<p class="lede">IPMA's forecast of the UV index, the strength of the sun's ultraviolet radiation, for each place and day. Each cell shows IPMA's value and is coloured by the World Health Organization's band for it.</p>
+<div id="uv" class="cb-chart">
+<noscript><p class="status fail">This page needs JavaScript: it reads IPMA's UV forecast from data.promptugal.news in your browser. The file is at <a href="https://data.promptugal.news/api/v1/ipma-uv/latest.json">data.promptugal.news</a>, and IPMA's own page at <a href="https://www.ipma.pt/en/otempo/prev.uv/">ipma.pt</a>.</p></noscript>
+</div>
+<h2>When the collector read IPMA</h2>
+<p class="cb-note">The UV forecast is read from IPMA by PrompTugal.news's collector. Each mark is one of its runs; a run that found new bytes from IPMA is marked as new data.</p>
+<div id="uv-runs"></div>
+</main>
+<!--FOOTER-->
+</body>
+</html>

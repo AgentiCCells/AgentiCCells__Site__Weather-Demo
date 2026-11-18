@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sea | Weather, from our data</title>
+<meta name="description" content="IPMA's three-day sea forecast for 12 coastal places in mainland Portugal, Madeira and the Azores: total sea and swell height ranges on one scale, swell period, wave direction and sea temperature, with the towns each coast is nearest to, drawn live from data.promptugal.news.">
+<meta name="share-image" content="/assets/share/sea.png">
+<!--HEAD-->
+<!-- Page adapted from AgentiCCells/AgentiCCells__Site__IPMA-Data, src/sea/index.html (commit 24e3d74), Apache-2.0 for code and CC BY 4.0 for text, same organisation, by developer.weather-demo@AgentiCCells.dinis (instance B), 2026-11-18, round 1. -->
+<link rel="stylesheet" href="/assets/charts.css">
+<script type="module" src="/assets/js/pages/sea.js"></script>
+</head>
+<body data-sources="ipma-sea">
+<!--HEADER-->
+<main id="main" class="wrap">
+<h1>Sea: waves and sea temperature</h1>
+<p class="lede">IPMA's forecast for the coast, today and the next two days: how high the sea and the swell will be, the swell's period, the direction of the waves and the temperature of the sea surface. All places share one height scale.</p>
+<p class="cb-note">The <strong>total sea</strong> is IPMA's significant wave height: wind waves and swell together. The <strong>swell</strong> is the part that arrives from distant weather. For conditions at sea, see IPMA's coastal forecast and warnings.</p>
+<div id="sea" class="cb-chart">
+<noscript><p class="status fail">This page needs JavaScript: it reads IPMA's sea forecast from data.promptugal.news in your browser. The file is at <a href="https://data.promptugal.news/api/v1/ipma-sea/latest.json">data.promptugal.news</a>, and IPMA's own page at <a href="https://www.ipma.pt/en/maritima/costeira/">ipma.pt</a>.</p></noscript>
+</div>
+<h2>When the collector read IPMA</h2>
+<p class="cb-note">The sea forecast is read from IPMA by PrompTugal.news's collector. Each mark is one of its runs; a run that found new bytes from IPMA is marked as new data.</p>
+<div id="sea-runs"></div>
+</main>
+<!--FOOTER-->
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Forecasts | Weather, from our data</title>
+<meta name="description" content="IPMA's five-day forecasts for 35 places in mainland Portugal, Madeira and the Azores: minimum and maximum temperature on one shared scale, chance of rain, weather type and wind, drawn live from data.promptugal.news. Each place opens in Your town.">
+<meta name="share-image" content="/assets/share/forecasts.png">
+<!--HEAD-->
+<!-- Page adapted from AgentiCCells/AgentiCCells__Site__IPMA-Data, src/forecasts/index.html (commit 24e3d74), Apache-2.0 for code and CC BY 4.0 for text, same organisation, by developer.weather-demo@AgentiCCells.dinis (instance B), 2026-11-18, round 1. -->
+<link rel="stylesheet" href="/assets/charts.css">
+<script type="module" src="/assets/js/pages/forecasts.js"></script>
+</head>
+<body data-sources="ipma-city-forecasts">
+<!--HEADER-->
+<main id="main" class="wrap">
+<h1>Forecasts by place</h1>
+<p class="lede">IPMA's daily forecast for 35 places, up to five days ahead: the lowest and highest temperature, the chance of rain, the weather type and the wind. Every place is drawn on the same temperature scale, so you can compare them at a glance.</p>
+<div id="fc" class="cb-chart">
+<noscript><p class="status fail">This page needs JavaScript: it reads IPMA's forecasts from data.promptugal.news in your browser. The file is at <a href="https://data.promptugal.news/api/v1/ipma-city-forecasts/latest.json">data.promptugal.news</a>, and IPMA's own page at <a href="https://www.ipma.pt/en/otempo/prev.localidade.hora/">ipma.pt</a>.</p></noscript>
+</div>
+<h2>When the collector read IPMA</h2>
+<p class="cb-note">The forecasts are read from IPMA by PrompTugal.news's collector. Each mark is one of its runs; a run that found new bytes from IPMA is marked as new data.</p>
+<div id="fc-runs"></div>
+</main>
+<!--FOOTER-->
+</body>
+</html>

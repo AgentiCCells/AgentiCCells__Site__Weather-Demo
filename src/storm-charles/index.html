@@ -7,6 +7,7 @@
 <meta name="description" content="What the storm-charles-archive source on data.promptugal.news holds: the 142 data files behind storm-charles.promptugal.news for Storm Charles, 10 to 12 November 2026, archived once on 17 November with a checksum for each. An archived event, not current weather.">
 <meta name="share-image" content="/assets/share/storm-charles.png">
 <!--HEAD-->
+<link rel="stylesheet" href="/assets/charts.css">
 <style>
 code{font-family:var(--mono);font-size:.88em;overflow-wrap:anywhere}
 .archived{max-width:52rem}
@@ -48,7 +49,7 @@ code{font-family:var(--mono);font-size:.88em;overflow-wrap:anywhere}
 
 <h2>The archive, read live</h2>
 <p>The figure below is drawn in your browser from <a href="https://data.promptugal.news/api/v1/storm-charles-archive/latest.json">storm-charles-archive/latest.json</a> and its <a href="https://data.promptugal.news/api/v1/storm-charles-archive/card.json">card</a>. If the file cannot be read, it says so.</p>
-<div id="storm-live" data-source="storm-charles-archive"></div>
+<div id="storm-live" data-source="storm-charles-archive"><p class="status loading">Reading the Storm Charles archive from data.promptugal.news...</p><noscript><p class="status fail">The live view needs JavaScript. The archive's file list is at <a href="https://data.promptugal.news/api/v1/storm-charles-archive/latest.json">storm-charles-archive/latest.json</a>.</p></noscript></div>
 
 <h2>The terms</h2>
 <p>From the card: "The storm site's own data: Apache-2.0 (its repository's licence). Quoted sources keep their own terms; each item links its source." So the storm site's own files may be reused under Apache-2.0, but anything they quote, IPMA's warnings among them, stays under its own source's terms: for IPMA, no profit-making or offensive use, and always name IPMA.</p>
@@ -66,5 +67,6 @@ code{font-family:var(--mono);font-size:.88em;overflow-wrap:anywhere}
 </div>
 </main>
 <!--FOOTER-->
+<script type="module" src="/assets/js/pages/storm.js"></script>
 </body>
 </html>

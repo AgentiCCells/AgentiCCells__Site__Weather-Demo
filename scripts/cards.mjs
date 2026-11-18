@@ -8,6 +8,9 @@
 // Code Apache-2.0; the cards' text and drawings CC BY 4.0.
 // Written by developer.ipma-data@AgentiCCells.dinis (instance D), 2026-11-18, round 2, for AgentiCCells__Site__IPMA-Data;
 // copied here (Apache-2.0) by conductor.weather-demo@AgentiCCells.dinis on 2026-11-18, address and kicker changed.
+// developer.weather-demo@AgentiCCells.dinis (instance B), 2026-11-18, round 1: PAGES and the drawings
+// for this site's pages (place, use-the-data, how-it-was-made added; 'd' and 'how-it-works' dropped
+// until the designs of round 2 exist), and this site's wording.
 import { createRequire } from 'node:module';
 import { readFileSync, writeFileSync, statSync, mkdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -54,26 +57,28 @@ const DRAW = {
   sea: `${R(4, i => `<path d="M0 ${70 + i * 26} C 50 ${50 + i * 26} 90 ${90 + i * 26} 140 ${70 + i * 26} S 230 ${50 + i * 26} 280 ${70 + i * 26} S 370 ${90 + i * 26} 420 ${70 + i * 26}" fill="none" stroke="${ACC}" stroke-width="${4 - i * 0.6}" opacity="${1 - i * 0.18}"/>`)}${R(4, i => `<rect x="30" y="${216 + i * 34}" width="360" height="1.5" fill="${LINE}"/><rect x="${80 + (i * 37) % 90}" y="${210 + i * 34}" width="${70 + (i * 43) % 90}" height="12" rx="6" fill="#2f6f9f"/>`)}`,
   uv: `<circle cx="330" cy="72" r="32" fill="none" stroke="${ACC}" stroke-width="5"/>${R(8, k => { const a = k * Math.PI / 4; return `<line x1="${330 + 44 * Math.cos(a)}" y1="${72 + 44 * Math.sin(a)}" x2="${330 + 58 * Math.cos(a)}" y2="${72 + 58 * Math.sin(a)}" stroke="${ACC}" stroke-width="5" stroke-linecap="round"/>`; })}${R(16, k => `<rect x="${30 + (k % 4) * 66}" y="${150 + Math.floor(k / 4) * 50}" width="58" height="42" rx="5" fill="${['#ffffff', LAND, '#d6d0c2', '#c4bdae'][(k * 3 + Math.floor(k / 4)) % 4]}" stroke="${EDGE}" stroke-width="2"/>`)}`,
   'storm-charles': `${R(5, i => `<ellipse cx="210" cy="170" rx="${40 + i * 34}" ry="${30 + i * 27}" fill="none" stroke="${i ? MUTED : ACC}" stroke-width="${i ? 2.5 : 5}" opacity="${1 - i * 0.14}" transform="rotate(-18 210 170)"/>`)}`,
-  'how-it-works': [['IPMA', 30], ['collector', 150], ['your browser', 270]].map(([t, y], i) => `<rect x="60" y="${y}" width="300" height="70" rx="12" fill="#ffffff" stroke="${i === 2 ? ACC : EDGE}" stroke-width="3"/><text x="210" y="${y + 44}" text-anchor="middle" font-size="26" font-weight="600" fill="${INK}" font-family="${SANS}">${t}</text>${i < 2 ? `<path d="M210 ${y + 74} v40 m-10 -12 l10 12 l10 -12" fill="none" stroke="${ACC}" stroke-width="4"/>` : ''}`).join(''),
+  'how-it-was-made': [['the brief', 30], ['agents, in rounds', 150], ['this site', 270]].map(([t, y], i) => `<rect x="60" y="${y}" width="300" height="70" rx="12" fill="#ffffff" stroke="${i === 2 ? ACC : EDGE}" stroke-width="3"/><text x="210" y="${y + 44}" text-anchor="middle" font-size="26" font-weight="600" fill="${INK}" font-family="${SANS}">${t}</text>${i < 2 ? `<path d="M210 ${y + 74} v40 m-10 -12 l10 12 l10 -12" fill="none" stroke="${ACC}" stroke-width="4"/>` : ''}`).join(''),
+  place: `<path d="M210 40 C 160 40 130 78 130 120 C 130 176 210 236 210 236 C 210 236 290 176 290 120 C 290 78 260 40 210 40 Z" fill="${LAND}" stroke="${EDGE}" stroke-width="4"/><circle cx="210" cy="120" r="30" fill="#ffffff" stroke="${ACC}" stroke-width="6"/>${R(3, i => `<rect x="${40 + i * 118}" y="270" width="104" height="62" rx="10" fill="#ffffff" stroke="${i ? EDGE : ACC}" stroke-width="3"/><rect x="${54 + i * 118}" y="288" width="${50 + (i * 17) % 30}" height="8" rx="4" fill="${INK}"/><rect x="${54 + i * 118}" y="306" width="74" height="6" rx="3" fill="${MUTED}" opacity=".5"/>`)}`,
+  'use-the-data': `<rect x="20" y="40" width="380" height="280" rx="12" fill="#ffffff" stroke="${EDGE}" stroke-width="3"/><rect x="20" y="40" width="380" height="36" rx="12" fill="${LAND}"/>${R(3, i => `<circle cx="${44 + i * 22}" cy="58" r="6" fill="${EDGE}"/>`)}<text x="44" y="122" font-size="26" fill="${ACC}" font-family="ui-monospace,Menlo,monospace">$ curl</text><text x="150" y="122" font-size="26" fill="${INK}" font-family="ui-monospace,Menlo,monospace">latest.json</text>${R(5, i => `<rect x="${44 + (i % 2) * 28}" y="${152 + i * 30}" width="${120 + (i * 61) % 180}" height="10" rx="5" fill="${i % 2 ? MUTED : INK}" opacity="${i % 2 ? 0.45 : 0.85}"/>`)}`,
   'use-with-ai': `<rect x="50" y="30" width="230" height="300" rx="10" fill="#ffffff" stroke="${EDGE}" stroke-width="3"/>${R(8, i => `<rect x="76" y="${66 + i * 30}" width="${100 + (i * 47) % 80}" height="9" rx="4" fill="${i ? MUTED : INK}" opacity="${i ? 0.45 : 1}"/>`)}<text x="350" y="210" text-anchor="middle" font-size="110" fill="${ACC}" font-family="ui-monospace,Menlo,monospace">{ }</text>`,
-  d: designs.map((x, k) => `<g transform="translate(${10 + (k % 3) * 136} ${40 + Math.floor(k / 3) * 150})"><rect width="128" height="118" rx="8" fill="#ffffff" stroke="${LINE}" stroke-width="2"/><svg x="4" y="4" width="120" height="75" viewBox="0 0 160 100">${SCHEMATIC[x.slug]}</svg>${x.palette.map((c, i) => `<rect x="${8 + i * 23}" y="90" width="20" height="16" fill="${c}" stroke="${EDGE}"/>`).join('')}</g>`).join(''),
   'behind-the-scenes': `${R(6, k => { const [x, y] = hexPt(k), [x2, y2] = hexPt((k + 1) % 6); return `<line x1="210" y1="180" x2="${x}" y2="${y}" stroke="${LINE}" stroke-width="3"/><line x1="${x}" y1="${y}" x2="${x2}" y2="${y2}" stroke="${LINE}" stroke-width="2"/>`; })}${R(6, k => { const [x, y] = hexPt(k); return `<circle cx="${x}" cy="${y}" r="30" fill="#ffffff" stroke="${k ? EDGE : ACC}" stroke-width="4"/>`; })}<circle cx="210" cy="180" r="38" fill="${ACC}"/>`,
 };
 
 // ---------- the cards ----------
 const MAIN = { bg: '#f7f5f0', ink: INK, muted: MUTED, accent: ACC, band: '#fff4d6', bandInk: '#3b2f00', font: SANS };
 const PAGES = [
-  ['home', 'Portugal now', "IPMA's warnings, forecasts and readings for Portugal, drawn live in your browser."],
-  ['warnings', 'Warnings', "IPMA's yellow, orange and red warnings for the 25 areas, on a map and a timeline."],
-  ['forecasts', 'Forecasts', 'Five days for 35 places: temperature range, chance of rain, weather and wind.'],
-  ['observations', 'Stations', "The latest hour's readings from IPMA's weather stations, on a map and in a table."],
-  ['fire-risk', 'Fire risk', "IPMA's fire risk class for 278 municipalities, for three days."],
-  ['sea', 'Sea', 'Wave heights and sea temperature for 12 coastal places, on one scale.'],
-  ['uv', 'UV index', 'The UV index by place and day, in the WHO bands.'],
-  ['storm-charles', 'Storm Charles, archived', "What happened, 9 to 12 November 2026: IPMA's warnings as they changed, with sources."],
-  ['how-it-works', 'How it works', "From IPMA's open data to the collector, the static files and your browser."],
-  ['use-with-ai', 'Use with AI', "Markdown twins, llms.txt and the data addresses, with IPMA's terms."],
-  ['d', 'Six designs', 'The same live IPMA data, drawn six ways: compare them and choose.'],
+  ['home', 'What the data says now', "Portugal's weather warnings, forecasts and readings, read live from public data, with the age of every file."],
+  ['place', 'Your town', "One town's warnings, forecast, nearest station, sea, UV and fire risk, side by side, each with its source."],
+  ['warnings', 'Warnings', "IPMA's yellow, orange and red warnings for the 25 areas, on a map and a timeline, with the towns in each."],
+  ['forecasts', 'Forecasts', 'Five days for 35 places on one temperature scale: range, chance of rain, weather and wind.'],
+  ['observations', 'Stations', "The latest hour's readings from IPMA's stations, on a map and in a table, with the nearest town."],
+  ['fire-risk', 'Fire risk', "IPMA's fire risk class for 278 mainland municipalities, for three days."],
+  ['sea', 'Sea', 'Wave heights and sea temperature for 12 coastal places, on one scale, with the towns nearby.'],
+  ['uv', 'UV index', 'The UV index by place and day, in the WHO bands, each place linked to its town.'],
+  ['storm-charles', 'Storm Charles, archived', 'A fixed record of 10 to 12 November 2026: the archive of the storm site, read live.'],
+  ['use-the-data', 'Use the data', 'The addresses, copy-paste examples in curl and JavaScript, the cards and their terms.'],
+  ['how-it-was-made', 'How it was made', 'From a brief to this site: an agent team, its rounds, its checks and its record.'],
+  ['use-with-ai', 'Use with AI', 'Markdown twins, llms.txt and the data addresses, with each source\'s terms.'],
   ['behind-the-scenes', 'Behind the scenes', 'The agent team that makes this site: roles, policies, rounds and commits.'],
 ];
 const STYLE = {
@@ -107,13 +112,14 @@ h1{font-size:${title.length > 16 ? 60 : 76}px;line-height:1.04;margin:0 0 20px;$
 }
 
 // conductor.weather-demo@ (2026-11-18): only pages that exist in src/ get a card.
-const exists = n => n === 'home' || n === 'behind-the-scenes' || existsSync(`src/${n}/index.html`);
+// developer.weather-demo@ (instance B): 'place' too, since its page is being built in the same round.
+const exists = n => n === 'home' || n === 'behind-the-scenes' || n === 'place' || existsSync(`src/${n}/index.html`);
 const jobs = [
   ...PAGES.filter(([n]) => exists(n)).map(([name, title, line]) => ({ name, html: card({ title, line, st: MAIN,
-    kicker: name === 'home' ? 'Portugal\'s weather, from public data' : name === 'd' ? 'Designs' : 'A page of the site',
+    kicker: name === 'home' ? 'Portugal\'s weather, from public data' : name === 'place' ? 'Pick a town, see every source' : 'A page of the site',
     drawing: `<svg viewBox="0 0 420 360" xmlns="http://www.w3.org/2000/svg">${DRAW[name]}</svg>` }) })),
   ...designs.filter(d => d.slug !== 'main').map(d => ({ name: `d-${d.slug}`, html: card({ title: d.name, line: d.line, st: STYLE[d.slug],
-    kicker: 'One of six designs of the same live data',
+    kicker: 'One of the designs of the same live data',
     drawing: `<svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" style="width:440px;height:275px;border-radius:10px;box-shadow:0 0 0 2px ${STYLE[d.slug].muted}">${SCHEMATIC[d.slug]}</svg>` }) })),
 ];
 
