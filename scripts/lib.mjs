@@ -69,7 +69,8 @@ export function header(path) {
 </header>`;
 }
 
-// The designs control: a <details> list of the six designs, the current one marked. It opens
+// The designs control (round 2, developer instance D of the weather demo: the summary names the design
+// in full, "Designs: The main design"): a <details> list of the six designs, the current one marked. It opens
 // and closes without JavaScript; /assets/js/designs-menu.js adds Escape and click-outside to
 // close it. The last item links to the chooser at /d/, so the control is never a dead end.
 export function designsControl(path) {
@@ -79,7 +80,7 @@ export function designsControl(path) {
     const on = cur && d.slug === cur.slug;
     return `<li><a href="${esc(d.path)}"${on ? ' aria-current="true"' : ''}><strong>${esc(d.name)}</strong>${on ? ' <span class="dm-on">(this design)</span>' : ''}<span>${esc(d.line)}</span></a></li>`;
   }).join('');
-  return `<details class="designs-menu"><summary>Designs${cur ? `<span class="dm-now">: ${esc(cur.slug === 'main' ? 'main' : cur.name)}</span>` : ''}</summary>
+  return `<details class="designs-menu"><summary>Designs${cur ? `<span class="dm-now">: ${esc(cur.name)}</span>` : ''}</summary>
 <div class="dm-panel"><p class="dm-head">${DESIGNS.length} designs, the same live data</p><ul>${items}</ul><p class="dm-all"><a href="/d/">Compare all ${DESIGNS.length} designs</a></p></div></details><script type="module" src="/assets/js/designs-menu.js"></script>`;
 }
 

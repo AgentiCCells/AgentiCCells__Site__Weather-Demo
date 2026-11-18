@@ -89,6 +89,10 @@ async function main() {
   const newestUp = ups.map(updatedMs).filter(Number.isFinite).sort((a, b) => b - a)[0];
   const upAgeH = Number.isFinite(newestUp) ? (Date.now() - newestUp) / 3600000 : null;
 
+  const narrow = matchMedia('(max-width: 599px)');
+  const setAll = (btn, open) => { for (const d of btn.closest('.fc-region').querySelectorAll('details.fc-fold')) d.open = open; };
+  narrow.addEventListener('change', () => { for (const d of root.querySelectorAll('details.fc-fold')) d.open = !narrow.matches; });
+
   // ---------- small multiples ----------
   function card(c) {
     const rows = dates.map(date => {
@@ -109,10 +113,18 @@ async function main() {
     });
     const label = `${c.name}: ` + dates.map(date => { const d = c.days.find(x => x.date === date); return d ? `${fmtDay(date)} ${tWords(d)}, rain chance ${rainText(d)}, ${weather(d.weather_type)}, ${wind(d)}` : `${fmtDay(date)} no forecast`; }).join('; ') + '.';
     // A place of this file that is in the town table links to the place view; any other is named only.
+    // Round 2 (team/rounds/2/design/PROPOSAL.md section 11.2), developer.weather-demo@ (instance D): each
+    // card is a <details>, closed below 600 px and open from 600 px; its summary holds today's range,
+    // rain and a bar on the shared scale (aria-hidden: the text says it), and no link.
     const town = placeById(c.id);
-    return h('article', { class: 'fc-card', 'data-id': String(c.id) },
-      h('header', {}, h('h4', {}, town ? h('a', { href: `/place/?id=${town.id}` }, c.name, h('span', { class: 'cb-vh' }, ': everything for this town')) : c.name),
-        h('span', { class: 'fc-times', style: 'margin:0' }, AREAS[c.area] ? `area ${AREAS[c.area].name}` : (c.area ? `area ${c.area}` : ''))),
+    const d0 = c.days.find(x => x.date === today);
+    const sumTxt = d0 ? ` · today ${tText(d0)} · rain ${rainText(d0)}` : ' · no forecast for today';
+    const bar0 = d0 && fin(d0.t_min_c) && fin(d0.t_max_c)
+      ? h('span', { class: 'fc-htrack fc-sumbar', style: `--steps:${steps}`, 'aria-hidden': 'true' }, h('i', { class: 'fc-hbar', style: `left:${Math.min(pct(d0.t_min_c), pct(d0.t_max_c))}%;width:${Math.abs(pct(d0.t_max_c) - pct(d0.t_min_c))}%` })) : null;
+    return h('details', { class: 'fc-card fc-fold', open: !narrow.matches, 'data-id': String(c.id) },
+      h('summary', {}, h('h4', {}, c.name), h('span', { class: 'fc-sumtxt' }, sumTxt), bar0,
+        h('span', { class: 'fc-times fc-area', style: 'margin:0' }, AREAS[c.area] ? `area ${AREAS[c.area].name}` : (c.area ? `area ${c.area}` : ''))),
+      town ? h('p', { class: 'fc-placelink' }, h('a', { href: `/place/?id=${town.id}` }, `Everything for ${c.name} in Your town`)) : null,
       h('p', { class: 'fc-times' }, `Read ${c.read_at ? fmtUTCsec(c.read_at) : 'unknown'} · IPMA update ${c.updated ? fmtUTC(updatedMs(c.updated)).replace(/ \d{4},/, ',') : 'not given'}`),
       h('p', { class: 'cb-vh' }, label),
       h('ul', { class: 'fc-rows', 'aria-hidden': 'true' }, rows),
@@ -124,6 +136,8 @@ async function main() {
     if (!list.length) return null;
     return h('section', { class: 'fc-region', 'aria-labelledby': `fc-r-${key}` },
       h('h3', { id: `fc-r-${key}` }, `${label} (${list.length} ${list.length === 1 ? 'place' : 'places'})`),
+      h('p', { class: 'fc-openall' }, h('button', { type: 'button', class: 'cb-btn', 'aria-describedby': `fc-r-${key}`, onclick: e => setAll(e.target, true) }, 'Open all'), ' ',
+        h('button', { type: 'button', class: 'cb-btn', 'aria-describedby': `fc-r-${key}`, onclick: e => setAll(e.target, false) }, 'Close all')),
       h('div', { class: 'fc-grid' }, list.map(card)));
   });
 

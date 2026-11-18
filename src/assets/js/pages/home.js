@@ -7,78 +7,23 @@
 // src/assets/js/pages/home.js, Apache-2.0, same organisation); the headlines are new.
 
 import { loadSource, loading, failure, provenance, provLine, statusBand, termsBlock, sourceState, h } from '../data.js';
-import { RCM_LEVELS, uvBand } from '../codes.js';
+import { HEADLINES } from '../headlines.js';
 import { placeById } from '../places.js';
-import { warningsBlock, warningTable, currentWarnings, levelsFor, warningWindows, lisbonNow, fmtPT } from '../map.js';
+import { warningsBlock, warningTable, currentWarnings } from '../map.js';
 
 const IPMA_WARN = 'https://www.ipma.pt/en/otempo/prev-sam/';
-const isNum = v => typeof v === 'number' && Number.isFinite(v);
-const today = () => lisbonNow().slice(0, 10);
-const plural = (n, one, many = one + 's') => `${n} ${n === 1 ? one : many}`;
 
-// Our own headline from each file (proposal 2.4). index.json's headlines are not reused: its
-// warnings line counts every area, not the areas with a warning (data notes, round 1).
+// Our own headline from each file (proposal 2.4), from headlines.js (moved there in round 2 by
+// instance D, unchanged, so the Workbench design can use them too).
 const SOURCES = [
-  { id: 'ipma-warnings', name: 'Warnings', href: '/warnings/', head: d => {
-    const c = currentWarnings(d.active);
-    if (!c.rows.length) return "No yellow, orange or red warning in IPMA's file for now or later.";
-    const by = {}; for (const w of c.rows) by[w.level] = (by[w.level] || 0) + 1;
-    const lv = ['yellow', 'orange', 'red'].filter(l => by[l]).map(l => `${by[l]} ${l}`);
-    const nowN = Object.values(levelsFor(d.active, warningWindows()[0])).filter(x => x.level !== 'green').length;
-    return `${lv.length > 1 ? lv.slice(0, -1).join(', ') + ' and ' + lv.at(-1) : lv[0]} warning${c.rows.length === 1 ? '' : 's'} in force or upcoming, in ${c.areas} of 25 areas; ${plural(nowN, 'area')} with one in force now.`;
-  } },
-  { id: 'ipma-city-forecasts', name: 'Forecasts', href: '/forecasts/', head: d => {
-    const cs = d.cities || [];
-    const days = Math.max(0, ...cs.map(c => (c.days || []).filter(x => x.date >= today()).length));
-    const run = cs.map(c => c.updated).filter(Boolean).sort().pop();
-    return `${plural(cs.length, 'place')}, ${plural(days, 'day')} from today${run ? `; IPMA's run ${fmtPT(run)} (IPMA's time, as given)` : ''}.`;
-  } },
-  { id: 'ipma-observations', name: 'Stations', href: '/observations/', head: d => {
-    const st = d.stations || [];
-    const rep = st.filter(s => s.reading);
-    const hour = d.hour_utc ? `${d.hour_utc.slice(11, 16)} UTC` : 'an unknown hour';
-    const t = rep.filter(s => isNum(s.reading.temp_c)).sort((a, b) => b.reading.temp_c - a.reading.temp_c);
-    return `${rep.length} of ${st.length} stations sent a reading for ${hour}${t.length ? `; warmest ${t[0].name} ${t[0].reading.temp_c} °C, coolest ${t.at(-1).name} ${t.at(-1).reading.temp_c} °C` : '; none gave a temperature'}.`;
-  } },
-  { id: 'ipma-fire-risk', name: 'Fire risk', href: '/fire-risk/', head: d => {
-    const ms = d.municipalities || [];
-    const t = today();
-    const cls = ms.map(m => (m.days || []).find(x => x.date === t)?.rcm).filter(c => RCM_LEVELS[c]);
-    if (!cls.length) return `${ms.length} mainland municipalities, but no class for today (${t}) in the file.`;
-    const by = {}; for (const c of cls) by[c] = (by[c] || 0) + 1;
-    const keys = Object.keys(by).sort();
-    if (keys.length === 1 && cls.length === ms.length) return `Today: all ${ms.length} mainland municipalities in class ${keys[0]} (${RCM_LEVELS[keys[0]].name.toLowerCase()}).`;
-    return `Today, of ${ms.length} mainland municipalities: ${keys.map(k => `${by[k]} in class ${k} (${RCM_LEVELS[k].name.toLowerCase()})`).join(', ')}.`;
-  } },
-  { id: 'ipma-sea', name: 'Sea', href: '/sea/', head: d => {
-    const cs = d.coasts || [];
-    const t = today();
-    const vals = cs.map(c => ({ c, v: (c.days || []).find(x => x.date === t)?.sea_max_m })).filter(x => isNum(x.v));
-    if (!vals.length) return `${plural(cs.length, 'coast')}; no total sea value for today.`;
-    // Every coast at the highest value: named up to three, counted above that.
-    const max = Math.max(...vals.map(x => x.v));
-    const top = vals.filter(x => x.v === max);
-    const where = top.length > 3 ? `${top.length} coasts` : top.map(x => x.c.name).join('; ');
-    return `${plural(cs.length, 'coast')}; highest total sea today up to ${max} m (${where}).`;
-  } },
-  { id: 'ipma-uv', name: 'UV', href: '/uv/', head: d => {
-    const t = today();
-    // Only named places with a real id (never id 0, nor an id with no name such as 1081525).
-    const vals = (d.places || []).filter(p => Number(p.id) > 0 && p.name).flatMap(p => (p.days || []).filter(x => x.date === t && isNum(x.index)).map(x => ({ p, v: x.index })));
-    if (!vals.length) return `No UV value for today (${t}) in the file.`;
-    const top = vals.sort((a, b) => b.v - a.v)[0];
-    const b = uvBand(top.v);
-    return `Highest UV today: ${top.v}${b ? ` (${b.name.toLowerCase()})` : ''}, ${top.p.name}.`;
-  } },
-  { id: 'meteoalarm-pt', name: 'MeteoAlarm (context)', href: '/warnings/', context: true, head: d => {
-    const ms = d.messages || [];
-    const n = ms.filter(m => Date.parse(m.expires_utc) > Date.now()).length;
-    return `${n} of ${ms.length} messages not expired, as relayed from IPMA. The same warnings in English, not a second source.`;
-  } },
-  { id: 'storm-charles-archive', name: 'Storm Charles archive', href: '/storm-charles/', archive: true, head: d => {
-    const c = d.counts || {};
-    return `A fixed record of the Storm Charles site (10 to 12 November 2026): ${c.files ?? 'an unknown number of'} files, ${c.verified ?? 'an unknown number'} verified.`;
-  } },
+  { id: 'ipma-warnings', name: 'Warnings', href: '/warnings/', head: HEADLINES['ipma-warnings'] },
+  { id: 'ipma-city-forecasts', name: 'Forecasts', href: '/forecasts/', head: HEADLINES['ipma-city-forecasts'] },
+  { id: 'ipma-observations', name: 'Stations', href: '/observations/', head: HEADLINES['ipma-observations'] },
+  { id: 'ipma-fire-risk', name: 'Fire risk', href: '/fire-risk/', head: HEADLINES['ipma-fire-risk'] },
+  { id: 'ipma-sea', name: 'Sea', href: '/sea/', head: HEADLINES['ipma-sea'] },
+  { id: 'ipma-uv', name: 'UV', href: '/uv/', head: HEADLINES['ipma-uv'] },
+  { id: 'meteoalarm-pt', name: 'MeteoAlarm (context)', href: '/warnings/', context: true, head: HEADLINES['meteoalarm-pt'] },
+  { id: 'storm-charles-archive', name: 'Storm Charles archive', href: '/storm-charles/', archive: true, head: HEADLINES['storm-charles-archive'] },
 ];
 const CURRENT = SOURCES.filter(s => !s.archive); // the seven the status band speaks for
 const res = {}, slow = {};

@@ -138,3 +138,38 @@ details.storm-group>summary{font-weight:600}
 .storm-about{margin:.2rem 0 0 .8rem}
 .storm-about p{margin:.2rem 0;color:var(--muted)}
 @media (max-width:560px){.storm-bars li{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"lab num" "bar bar"}.storm-bars .lab{grid-area:lab}.storm-bars li>span[aria-hidden]{grid-area:bar}.storm-bars .num{grid-area:num}}
+
+/* Round 2, developer.weather-demo@AgentiCCells.dinis (instance D): folding the long phone pages
+   (team/rounds/2/design/PROPOSAL.md section 11, review S8). Everything that hides is scoped to
+   below 600 px; from 600 px the pages look as in round 1. */
+/* /observations/: four columns and the first 20 stations on a phone; silent stations in a fold */
+.obs-ctl{margin:.3rem 0}
+.obs-silent p{margin:.3rem 0 .2rem;font-size:.9rem}
+@media (min-width:600px){.obs-ctl{display:none}}
+@media (max-width:599px){
+  .obs-wrap:not(.all-cols) .c-opt{display:none}
+  .obs-wrap:not(.all-rows) tr.c-more{display:none}
+  .obs-ctl .cb-btn{font-size:.92rem;padding:.35rem .8rem;min-height:2.4rem}
+  .obs-wrap:not(.all-cols) .obs-table th,.obs-wrap:not(.all-cols) .obs-table td{padding:.3rem .2rem;font-size:.82rem}
+  .obs-wrap:not(.all-cols) .obs-table th button{gap:.1rem}
+}
+.obs-table th[tabindex="-1"]:focus{outline:3px solid var(--accent);outline-offset:-3px}
+/* /forecasts/: each card a <details>; from 600 px the summary is the card's header, marker hidden */
+.fc-fold>summary{list-style:none;cursor:pointer;color:var(--ink);display:flex;justify-content:space-between;align-items:baseline;gap:.4rem;flex-wrap:wrap}
+.fc-fold>summary::-webkit-details-marker{display:none}
+.fc-fold>summary h4{margin:0;font-size:1rem;color:var(--ink)}
+.fc-placelink{margin:.15rem 0 .1rem;font-size:.85rem}
+.fc-openall{margin:.2rem 0 .5rem}
+@media (min-width:600px){.fc-fold .fc-sumtxt,.fc-fold .fc-sumbar,.fc-openall{display:none}}
+@media (max-width:599px){
+  .fc-fold>summary{display:block;position:relative;padding:.15rem 5rem .15rem 1.1rem;line-height:1.35}
+  .fc-fold>summary::before{content:"";position:absolute;left:.1rem;top:.6rem;width:.45em;height:.45em;border-right:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:rotate(-45deg)}
+  .fc-fold[open]>summary::before{transform:rotate(45deg);top:.5rem}
+  .fc-fold>summary h4{display:inline;font-size:.98rem}
+  .fc-fold>summary>.fc-sumtxt{font-size:.88rem;font-variant-numeric:tabular-nums}
+  .fc-fold>summary .fc-sumbar{position:absolute;right:0;top:50%;margin-top:-5px;width:4.4rem}
+  .fc-fold>summary .fc-area{display:none}
+  .fc-grid{gap:.4rem}
+  .fc-card.fc-fold{padding:.35rem .6rem}
+}
+@media (forced-colors:active){.fc-fold>summary::before{border-color:CanvasText}}

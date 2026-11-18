@@ -1,0 +1,92 @@
+/* timetable.css: the Timetable design (team/rounds/2/design/PROPOSAL.md, sections 4 and 8).
+   Only the surface tokens change (bg, panel, ink, muted, line, accent, accent-ink and the light
+   status words); the level, RCM and UV colours stay site.css's. Light, then dark, as site.css.
+   Code Apache-2.0. Written by developer.weather-demo@AgentiCCells.dinis (instance D), 2026-11-18, round 2. */
+body.d-timetable{--bg:#eef1f4;--panel:#ffffff;--ink:#14202b;--muted:#4f5d6a;--line:#c4ccd4;--accent:#1f5fa8;--accent-ink:#ffffff;
+  --fresh:#24663f;--stale:#8a4f00;--old:#a3221b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) body.d-timetable{--bg:#0f151b;--panel:#18212a;--ink:#e6edf3;--muted:#9fb0bf;--line:#2a3642;--accent:#7cb1ec;--accent-ink:#0f151b;
+  --fresh:#6cc48f;--stale:#e0a24a;--old:#ff8a80}}
+:root[data-theme="dark"] body.d-timetable{--bg:#0f151b;--panel:#18212a;--ink:#e6edf3;--muted:#9fb0bf;--line:#2a3642;--accent:#7cb1ec;--accent-ink:#0f151b;
+  --fresh:#6cc48f;--stale:#e0a24a;--old:#ff8a80}
+
+.d-timetable main{max-width:80rem}
+.d-timetable .d-kicker{margin:0 0 .4rem;font-size:.9rem;color:var(--muted)}
+.d-timetable .d-back{margin:2rem 0 0;font-size:.95rem}
+.d-timetable h1{margin:.1rem 0 .2rem}
+.d-timetable h1:focus{outline:none}
+.d-timetable h1:focus-visible{outline:3px solid var(--accent)}
+.tt-subhead{margin:0 0 .5rem;color:var(--muted);font-size:.92rem}
+.tt-pick{display:flex;flex-wrap:wrap;gap:.4rem .6rem;align-items:center;margin:.3rem 0 .6rem}
+.tt-pick label{font-weight:600}
+.tt-pick select{font:inherit;padding:.3rem .5rem;border:1px solid var(--muted);border-radius:6px;background:var(--panel);color:var(--ink);min-height:2.3rem;max-width:100%}
+.tt-pick button{font:inherit;padding:.3rem 1rem;border:1px solid var(--accent);border-radius:6px;background:var(--accent);color:var(--accent-ink);cursor:pointer;min-height:2.3rem}
+.tt-none{color:var(--muted);font-style:italic}
+.tt-fig{display:block;font-variant-numeric:tabular-nums;font-weight:600}
+.tt-sub{font-size:.85rem}
+span.tt-sub{display:block;color:var(--muted)}
+.tt-name{font-weight:700}
+.tt-read,.tt-note,.tt-state{display:block;font-size:.8rem;font-weight:400}
+.tt-read{color:var(--muted)}
+.tt-note{color:var(--muted);margin-top:.15rem}
+.tt-state{font-weight:600}
+.tt-wtext{display:block;font-size:.8rem;line-height:1.3;margin-top:.15rem}
+.tt-wtext .sw{width:.95rem;height:.7rem;vertical-align:-.05em}
+.tt-uvv{display:inline-flex;flex-direction:column;gap:.1rem;margin-right:.3rem}
+.tt-uvv .tt-sub{display:block}
+.tt-range{margin:.25rem 0}
+.tt-nowlab{display:block;font-weight:400;font-size:.75rem;color:var(--accent)}
+
+/* the table, 760 px and wider */
+.tt-table{table-layout:fixed;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius)}
+.tt-table caption{padding:.2rem 0 .5rem;font-size:.88rem}
+.tt-table col.tt-c0{width:10rem}
+.tt-table th,.tt-table td{padding:.5rem .55rem;border-bottom:0;border-top:1px solid var(--line);font-size:.9rem;color:var(--ink)}
+.tt-table thead th{border-top:0;font-size:.85rem;vertical-align:bottom}
+.tt-table th[scope="row"]{border-left:4px solid transparent;font-weight:400}
+.tt-row.tt-mark-stale th[scope="row"]{border-left-color:var(--stale)}
+.tt-row.tt-mark-old th[scope="row"],.tt-row.tt-mark-missing th[scope="row"]{border-left-color:var(--old)}
+.tt-table td{border-left:1px solid var(--line)}
+.tt-today{position:relative}
+.tt-today>*{position:relative;z-index:1}
+.tt-today::after{content:"";position:absolute;top:0;bottom:0;left:var(--now,0);width:2px;margin-left:-1px;background:var(--accent);pointer-events:none;z-index:0;opacity:.85}
+.tt-table thead .tt-today::after{top:auto;height:.5rem}
+.tt-span{color:var(--ink)}
+.tt-muted{color:var(--muted);font-size:.85rem}
+.tt-table tr.tt-provrow td{border-top:0;border-left:0;padding:0 .55rem .55rem}
+.tt-table tr.tt-provrow .provline{margin:0;font-size:.8rem}
+.tt-today>.tt-tick{position:absolute;top:0;width:0;height:.55rem;border-left:2px dotted var(--muted);pointer-events:auto}
+.tt-tick-stale{border-left-color:var(--stale)} .tt-tick-old{border-left-color:var(--old)}
+svg.tt-bar{display:block;width:100%;height:10px;overflow:visible}
+svg.tt-bar .tt-track{fill:var(--line)}
+svg.tt-bar .tt-edge{fill:none;stroke:var(--map-edge);stroke-width:1}
+.tt-narrow{display:none}
+.tt-sources{display:none}
+
+/* below 760 px: one section per day, then the sources (decision D3) */
+@media (max-width:759px){
+  .tt-wide{display:none}
+  .tt-narrow{display:block}
+  .tt-sources{display:block}
+  .tt-day{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:.6rem .8rem;margin:0 0 .8rem}
+  .tt-day h2{margin:.1rem 0 .3rem;font-size:1.1rem}
+  .tt-day .tt-nowlab{display:inline;font-size:.85rem}
+  .tt-list{list-style:none;margin:0;padding:0}
+  .tt-list li{padding:.4rem 0 .4rem .5rem;border-top:1px solid var(--line);border-left:4px solid transparent;font-size:.92rem}
+  .tt-list li:first-child{border-top:0}
+  .tt-list li.tt-mark-stale{border-left-color:var(--stale)}
+  .tt-list li.tt-mark-old,.tt-list li.tt-mark-missing{border-left-color:var(--old)}
+  .tt-val .tt-fig{display:inline}
+  .tt-val .tt-range{display:block;max-width:14rem}
+  .tt-val span.tt-sub{display:inline}
+  .tt-val span.tt-sub::before{content:" · "}
+  .tt-val .tt-uvv span.tt-sub::before{content:""}
+  .tt-val .tt-uvv{flex-direction:row;align-items:center;gap:.3rem}
+  .tt-sources ul{list-style:none;margin:0;padding:0}
+  .tt-sources li{padding:.5rem 0 .5rem .6rem;border-top:1px solid var(--line);border-left:4px solid transparent}
+  .tt-sources li.tt-mark-stale{border-left-color:var(--stale)}
+  .tt-sources li.tt-mark-old,.tt-sources li.tt-mark-missing{border-left-color:var(--old)}
+  .tt-sources li:focus{outline:3px solid var(--accent)}
+  .tt-srclab{margin:0}
+}
+@media (forced-colors:active){.tt-today::after{background:CanvasText}svg.tt-bar rect{forced-color-adjust:none}}
+@media print{.tt-pick{display:none}}

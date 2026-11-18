@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Timetable | Weather, from our data</title>
+<meta name="description" content="The Timetable design: every source for one town on one five-day axis, with a now line and each file's read time. Read live from data.promptugal.news. Not a warning service.">
+<meta name="share-image" content="/assets/share/d-timetable.png">
+<!--HEAD-->
+<link rel="stylesheet" href="/d/timetable/timetable.css">
+<!-- Written by developer.weather-demo@AgentiCCells.dinis (instance D), 2026-11-18, round 2, from team/rounds/2/design/PROPOSAL.md sections 2 and 4. Code Apache-2.0, text CC BY 4.0. -->
+</head>
+<body class="d-timetable" data-sources="ipma-warnings ipma-city-forecasts ipma-observations ipma-sea ipma-uv ipma-fire-risk">
+<!--HEADER-->
+<main id="main">
+<p class="d-kicker"><a href="/d/">Designs</a> · Timetable, one of six designs of the same data</p>
+<noscript><p class="status fail">This design reads the data live in your browser and needs JavaScript. Without it, see <a href="/place/">Your town</a> (its list of towns works without JavaScript) or the files on <a href="https://data.promptugal.news/api/v1/">data.promptugal.news</a>.</p></noscript>
+<div id="d-root"><p class="status loading">Reading the six files from data.promptugal.news...</p></div>
+<p class="d-back"><a href="/d/">All six designs</a> · <a id="d-main" href="/place/">The same town in the main design</a></p>
+</main>
+<!--FOOTER-->
+<script type="module" src="/d/timetable/timetable.js"></script>
+</body>
+</html>

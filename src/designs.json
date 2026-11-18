@@ -1,5 +1,5 @@
 {
-  "about": "The designs of this site. Round 1 has the main design only; five more come from the design rounds (team/rounds/). Every design reads the same live files from data.promptugal.news. Not a warning service. For warnings and safety, follow IPMA (ipma.pt) and ANEPC.",
+  "about": "The six designs of this site: the main design and five others from round 2 (team/rounds/2/design/PROPOSAL.md). Every design reads the same live files from data.promptugal.news. Not a warning service. For warnings and safety, follow IPMA (ipma.pt) and ANEPC.",
   "designs": [
     {
       "slug": "main",
@@ -7,8 +7,59 @@
       "line": "The whole site on a calm page, in light or dark.",
       "path": "/",
       "palette": ["#f7f5f0", "#ffffff", "#1d2329", "#5b6670", "#0b5c7a"],
+      "palette_dark": ["#12161a", "#1a2026", "#e8ecef", "#9aa6b0", "#5fb3d3"],
       "fonts": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
       "figures": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+    },
+    {
+      "slug": "postcard",
+      "name": "Postcard",
+      "line": "One town as a postcard: the day's message on the front, the sources on the back.",
+      "path": "/d/postcard/",
+      "palette": ["#f3ede2", "#fffdf8", "#2a2420", "#6b5f55", "#2d4f86"],
+      "palette_dark": ["#1c1714", "#26201b", "#f1e9df", "#b8aa9c", "#a9bff0"],
+      "fonts": "Charter, \"Iowan Old Style\", Georgia, serif",
+      "figures": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+    },
+    {
+      "slug": "timetable",
+      "name": "Timetable",
+      "line": "Time first: every source for one town on one five-day axis, with each file's read time.",
+      "path": "/d/timetable/",
+      "palette": ["#eef1f4", "#ffffff", "#14202b", "#4f5d6a", "#1f5fa8"],
+      "palette_dark": ["#0f151b", "#18212a", "#e6edf3", "#9fb0bf", "#7cb1ec"],
+      "fonts": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+      "figures": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+    },
+    {
+      "slug": "two-towns",
+      "name": "Two towns",
+      "line": "Two or three towns side by side, block by block, on the same scales.",
+      "path": "/d/two-towns/",
+      "palette": ["#fafafa", "#ffffff", "#1b1b1f", "#5d5d66", "#2b4c9b"],
+      "palette_dark": ["#141418", "#1e1e24", "#ececf1", "#a3a3ad", "#93acf0"],
+      "fonts": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+      "figures": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+    },
+    {
+      "slug": "workbench",
+      "name": "Workbench",
+      "line": "The data first: each figure with its file, its JSON path and a fetch to copy.",
+      "path": "/d/workbench/",
+      "palette": ["#f4f6f4", "#ffffff", "#1a1f1c", "#56615a", "#0b6375"],
+      "palette_dark": ["#101412", "#181e1b", "#e3ebe6", "#9eaca4", "#5ec2d0"],
+      "fonts": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+      "figures": "ui-monospace, SFMono-Regular, Menlo, monospace"
+    },
+    {
+      "slug": "large-print",
+      "name": "Large print",
+      "line": "Large type, one column, sentences and tables instead of charts.",
+      "path": "/d/large-print/",
+      "palette": ["#ffffff", "#f2f2f2", "#000000", "#3d3d3d", "#0040a0"],
+      "palette_dark": ["#000000", "#141414", "#ffffff", "#d0d0d0", "#8ab4ff"],
+      "fonts": "Verdana, \"DejaVu Sans\", system-ui, sans-serif",
+      "figures": "Verdana, \"DejaVu Sans\", system-ui, sans-serif"
     }
   ]
 }

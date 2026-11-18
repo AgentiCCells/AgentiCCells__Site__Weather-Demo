@@ -1,0 +1,64 @@
+/* workbench.css: the Workbench design (team/rounds/2/design/PROPOSAL.md, sections 6 and 8).
+   Only the surface tokens change (bg, panel, ink, muted, line, accent, accent-ink and the light
+   status words); the level, RCM and UV colours stay site.css's. Light, then dark, as site.css.
+   Code Apache-2.0. Written by developer.weather-demo@AgentiCCells.dinis (instance D), 2026-11-18, round 2. */
+body.d-workbench{--bg:#f4f6f4;--panel:#ffffff;--ink:#1a1f1c;--muted:#56615a;--line:#c9d1cc;--accent:#0b6375;--accent-ink:#ffffff;
+  --fresh:#24663f;--stale:#8a4f00;--old:#a3221b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) body.d-workbench{--bg:#101412;--panel:#181e1b;--ink:#e3ebe6;--muted:#9eaca4;--line:#2a332e;--accent:#5ec2d0;--accent-ink:#101412;
+  --fresh:#6cc48f;--stale:#e0a24a;--old:#ff8a80}}
+:root[data-theme="dark"] body.d-workbench{--bg:#101412;--panel:#181e1b;--ink:#e3ebe6;--muted:#9eaca4;--line:#2a332e;--accent:#5ec2d0;--accent-ink:#101412;
+  --fresh:#6cc48f;--stale:#e0a24a;--old:#ff8a80}
+
+.d-workbench main{max-width:80rem}
+.d-workbench code,.d-workbench pre{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.d-workbench .d-kicker{margin:0 0 .4rem;font-size:.9rem;color:var(--muted)}
+.d-workbench .d-back{margin:2rem 0 0;font-size:.95rem}
+.d-workbench h1{margin:.1rem 0 .2rem}
+.d-workbench h1:focus{outline:none}
+.d-workbench h1:focus-visible{outline:3px solid var(--accent)}
+.wb-sub{margin:0 0 .5rem;color:var(--muted);font-size:.92rem}
+.wb-pick{display:flex;flex-wrap:wrap;gap:.4rem .6rem;align-items:center;margin:.3rem 0 .6rem}
+.wb-pick label{font-weight:600}
+.wb-pick select{font:inherit;padding:.3rem .5rem;border:1px solid var(--muted);border-radius:6px;background:var(--panel);color:var(--ink);min-height:2.3rem;max-width:100%}
+.wb-pick button,.wb-copy button{font:inherit;padding:.3rem 1rem;border:1px solid var(--accent);border-radius:6px;cursor:pointer;min-height:2.3rem}
+.wb-pick button{background:var(--accent);color:var(--accent-ink)}
+.wb-copy button{background:var(--panel);color:var(--ink)}
+
+.wb-layout{display:grid;gap:1rem}
+.wb-files{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:.5rem .8rem}
+.wb-files>summary{font-weight:600;min-height:2.2rem;display:flex;align-items:center}
+.wb-files-h{display:none}
+.wb-files-list{list-style:none;margin:0;padding:0}
+.wb-file{padding:.5rem 0 .5rem .5rem;border-top:1px solid var(--line);border-left:4px solid transparent;font-size:.85rem}
+.wb-file:first-child{border-top:0}
+.wb-file p{margin:.1rem 0}
+.wb-file.wb-stale{border-left-color:var(--stale)} .wb-file.wb-old,.wb-file.wb-missing{border-left-color:var(--old)}
+.wb-fid code{font-weight:700;font-size:.9rem}
+.wb-read,.wb-count{color:var(--muted)}
+.wb-what{color:var(--ink)}
+@media (min-width:1000px){
+  .wb-layout{grid-template-columns:22rem minmax(0,52rem);align-items:start}
+  .wb-side{position:sticky;top:.8rem;max-height:calc(100vh - 1.6rem);overflow-y:auto;overscroll-behavior:contain}
+  .wb-files>summary{display:none}
+  .wb-files-h{display:block;font-size:1.05rem;margin:.3rem 0 .4rem}
+}
+
+.wb-block{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:.9rem 1rem;margin:0 0 1rem;min-width:0}
+.wb-block>h2{margin:0 0 .5rem;font-size:1.15rem}
+.wb-block>h2 code{font-size:.95rem;font-weight:400;color:var(--muted)}
+.wb-mark-stale{border-left:4px solid var(--stale)} .wb-mark-old,.wb-mark-missing{border-left:4px solid var(--old)}
+.wb-paths{font-size:.86rem}
+.wb-paths th.wb-path{font-weight:400;color:var(--accent)}
+.wb-paths code{overflow-wrap:anywhere}
+.wb-val code{color:var(--ink);font-weight:600}
+.wb-join{font-size:.88rem;margin:.6rem 0}
+.wb-copy{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:.5rem 0}
+.wb-msg{font-size:.85rem;color:var(--muted)}
+.wb-msg input{font:inherit;font-family:var(--mono);width:min(100%,30rem);padding:.2rem .4rem;border:1px solid var(--muted);border-radius:4px;background:var(--bg);color:var(--ink)}
+.wb-block details{margin:.4rem 0;font-size:.9rem}
+.wb-block details>summary{font-weight:600}
+.wb-block pre{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:.6rem;overflow-x:auto;font-size:.8rem;max-width:100%;white-space:pre}
+@media (max-width:600px){
+  .wb-copy button{width:100%}
+  .wb-paths tr{padding:.35rem 0}
+}

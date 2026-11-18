@@ -13,6 +13,9 @@ import { WIND_DIR_ID } from '../codes.js';
 import { buildGrid, pointMap } from '../map.js';
 import { PLACES, findStation } from '../places.js';
 
+// The folding styles live in charts.css (proposal 11), which this page's HTML does not link: add it once.
+if (!document.querySelector('link[href="/assets/charts.css"]')) document.head.append(h('link', { rel: 'stylesheet', href: '/assets/charts.css' }));
+
 const IPMA_OBS = 'https://www.ipma.pt/en/otempo/obs.superficie/';
 const isNum = v => typeof v === 'number' && Number.isFinite(v);
 const R = p => p.reading || null;
@@ -111,11 +114,20 @@ function nearCell(list) {
     h('span', { class: 'muted' }, ` (${kmText(t.km)}${t.reporting ? ', nearest reporting' : ''})`)]));
 }
 
+// Round 2 (team/rounds/2/design/PROPOSAL.md section 11.1, decision D6), developer.weather-demo@ (instance D):
+// stations that sent nothing leave the table at every width and are listed by name in a fold under it;
+// below 600 px the table starts with four columns (class c-opt hides the rest) and the first 20 rows
+// (class c-more), with a button above and one below to show the rest. Sorting is unchanged.
+const OPT = new Set([2, 4, 6, 7, 8]); // Humidity, Wind from, Pressure, Radiation, Nearest to
+const FIRST = 20;
+const silent = p => !p.reading || COLS.slice(1, 8).every(([, get, type]) => { const v = get(p); return v === null || v === undefined || (type === 'num' && !isNum(v)); });
+
 function sortableTable(stations, caption, near = new Map()) {
   COLS.push(['Nearest to', p => (near.get(p) || []).map(t => t.p.name).join(', ') || null, 'text']);
   let col = 0, dir = 1;
   const tbody = h('tbody');
-  const ths = COLS.map(([name, , type], i) => h('th', { scope: 'col', class: `sortable${type === 'num' ? ' num' : ''}` },
+  const wrap = h('div', { class: 'table-wrap obs-wrap' });
+  const ths = COLS.map(([name, , type], i) => h('th', { scope: 'col', class: `sortable${type === 'num' ? ' num' : ''}${OPT.has(i) ? ' c-opt' : ''}` },
     h('button', { type: 'button', onclick: () => { if (col === i) dir = -dir; else { col = i; dir = type === 'num' ? -1 : 1; } render(); } }, name)));
   const render = () => {
     const [, get, type] = COLS[col];
@@ -125,16 +137,41 @@ function sortableTable(stations, caption, near = new Map()) {
       return (type === 'num' ? x - y : String(x).localeCompare(String(y), 'pt')) * dir || String(a.name).localeCompare(String(b.name), 'pt');
     });
     ths.forEach((th, i) => { if (i === col) th.setAttribute('aria-sort', dir > 0 ? 'ascending' : 'descending'); else th.removeAttribute('aria-sort'); });
-    tbody.replaceChildren(...rows.map(p => h('tr', {}, COLS.map(([, get, type, dg], i) => {
+    tbody.replaceChildren(...rows.map((p, r) => h('tr', { class: r >= FIRST ? 'c-more' : null }, COLS.map(([, get, type, dg], i) => {
       const v = get(p);
-      if (i === 0) return h('th', { scope: 'row' }, v ?? 'unnamed');
-      if (i === COLS.length - 1) return nearCell(near.get(p));
-      if (v === null || v === undefined || (type === 'num' && !isNum(v))) return h('td', { class: `none${type === 'num' ? ' num' : ''}` }, 'none');
-      return h('td', { class: type === 'num' ? 'num' : null }, type === 'num' ? Number(v).toFixed(dg) : v);
+      const opt = OPT.has(i) ? 'c-opt' : '';
+      if (i === 0) return h('th', { scope: 'row', tabindex: r === FIRST ? '-1' : null }, v ?? 'unnamed');
+      if (i === COLS.length - 1) { const c = nearCell(near.get(p)); c.classList.add('c-opt'); return c; }
+      if (v === null || v === undefined || (type === 'num' && !isNum(v))) return h('td', { class: `none${type === 'num' ? ' num' : ''} ${opt}`.trim() }, 'none');
+      return h('td', { class: `${type === 'num' ? 'num' : ''} ${opt}`.trim() || null }, type === 'num' ? Number(v).toFixed(dg) : v);
     }))));
   };
   render();
-  return h('div', { class: 'table-wrap' }, h('table', {}, h('caption', {}, caption), h('thead', {}, h('tr', {}, ths)), tbody));
+  const colsBtn = h('button', { type: 'button', class: 'cb-btn obs-cols', 'aria-pressed': 'false', onclick: () => {
+    const on = !wrap.classList.contains('all-cols');
+    wrap.classList.toggle('all-cols', on);
+    colsBtn.setAttribute('aria-pressed', String(on));
+    colsBtn.textContent = on ? 'Show 4 columns' : `Show all ${COLS.length} columns`;
+  } }, `Show all ${COLS.length} columns`);
+  const more = stations.length - FIRST;
+  const rowsBtn = more > 0 ? h('button', { type: 'button', class: 'cb-btn obs-rows', onclick: () => {
+    wrap.classList.add('all-rows');
+    rowsBtn.hidden = true;
+    tbody.querySelector('th[tabindex="-1"]')?.focus();
+  } }, `Show the other ${more} station${more === 1 ? '' : 's'}`) : null;
+  wrap.append(h('table', { class: 'obs-table' }, h('caption', {}, caption), h('thead', {}, h('tr', {}, ths)), tbody));
+  return h('div', {}, h('p', { class: 'obs-ctl' }, colsBtn), wrap, rowsBtn ? h('p', { class: 'obs-ctl' }, rowsBtn) : null);
+}
+
+// The silent stations, by name, each with the towns it is nearest to.
+function silentFold(list, hour, near) {
+  if (!list.length) return null;
+  const names = list.slice().sort((a, b) => String(a.name).localeCompare(String(b.name), 'pt')).flatMap((p, i) => {
+    const towns = near.get(p) || [];
+    return [i ? ', ' : '', p.name ?? 'unnamed', towns.length ? [' (nearest to ', towns.flatMap((t, k) => [k ? ', ' : '', h('a', { href: `/place/?id=${t.p.id}` }, t.p.name)]), ')'] : ''];
+  });
+  return h('details', { class: 'fold obs-silent' }, h('summary', {}, `${list.length} station${list.length === 1 ? '' : 's'} sent nothing for ${hour}`),
+    h('p', {}, names, '.'));
 }
 
 async function main() {
@@ -169,7 +206,12 @@ async function main() {
   let narrow = holder.clientWidth < 560;
   if (typeof ResizeObserver !== 'undefined') new ResizeObserver(() => { const n = holder.clientWidth < 560; if (n !== narrow) { narrow = n; draw(); } }).observe(holder);
   const near = townsByStation(O);
-  tb.replaceChildren(h('div', { class: 'panel' }, sortableTable(O.stations || [], `${(O.stations || []).length} stations, ${O.hour_utc ? fmtUTC(O.hour_utc) : 'hour not given'}. IPMA's hourly means; rain is the total for the hour. Nearest to: the towns of this site for which this station is the nearest, with the distance.`, near)), provenance(src));
+  const all = O.stations || [];
+  const quiet = all.filter(silent), loud = all.filter(p => !silent(p));
+  const hourTxt = O.hour_utc ? `${O.hour_utc.slice(11, 16)} UTC` : 'this hour (not given in the file)';
+  tb.replaceChildren(h('div', { class: 'panel' },
+    sortableTable(loud, `${loud.length} of ${all.length} stations reported for ${O.hour_utc ? fmtUTC(O.hour_utc) : 'an hour not given in the file'}${quiet.length ? `; the ${quiet.length} that did not are listed below the table` : ''}. IPMA's hourly means; rain is the total for the hour. Nearest to: the towns of this site for which this station is the nearest, with the distance.`, near),
+    silentFold(quiet, hourTxt, near)), provenance(src));
 }
 main().catch(e => {
   for (const id of ['obs', 'table']) { const el = document.getElementById(id); if (el) failure(el, "IPMA's station readings", { error: `the page could not draw the file (${e.message})` }, IPMA_OBS); }
