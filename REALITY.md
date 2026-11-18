@@ -1,4 +1,9 @@
 # REALITY.md: what exists now
 
-- Seeded by the AgentiCCells site factory on 2026-11-18 from AgentiCCells/AgentiCCells__Site__Template@dev.
-- Its live state is recorded in requests/2026-11-18__weather-demo/status.json in AgentiCCells__Site__Factory.
+- Seeded by the AgentiCCells site factory on 2026-11-18 from AgentiCCells/AgentiCCells__Site__Template@dev (its live state: requests/2026-11-18__weather-demo/status.json in AgentiCCells__Site__Factory).
+- From 2026-11-18, about 16:15 UTC, the cell conductor.weather-demo@AgentiCCells.dinis runs a team of six roles as sub-agents in one session (conductor, analyst, designer, developer, writer, reviewer): roles, policies (status: proposal), scopes and workflow in `team/`, round reports in `team/rounds/`. Budget: at most five full rounds.
+- Shared gates, layout and loader copied from AgentiCCells__Site__IPMA-Data (Apache-2.0, each file says so): validator (disclaimer and link preview on every page), leak scan, check-commits, role-scope, abp-check, tests.
+- Round 1: the place view (/place/?id=<IPMA place id>) for IPMA's 35 forecast places, joining warnings, forecast, nearest station, sea within 25 km (this site's choice), UV and fire risk, each block with its own source line and failure state; home with a status band and a headline per source; one page per source (warnings with MeteoAlarm as context, forecasts, stations, fire risk, sea, UV); Storm Charles drawn from the archive; Use the data (curl and JavaScript examples, cards and terms, a small page to copy); How it was made; Use with AI, llms.txt and Markdown twins; a share card per page; behind the scenes generated from team/ and git log.
+- Not yet true: the five designs under /d/ (round 2); checks in Firefox, Safari, a screen reader; a static page per town.
+- Known facts about the data that the pages state: the collector's runs are irregular (a gap of 7 h 15 min on 18 November), so pages may show "stale"; index.json's by_place covers 18 Algarve places only, so the place view joins the per-source files itself; the islands have no fire-risk class; storm-charles-archive is fixed and has no reads.json.
+- The repository holds no weather data beyond seven small test fixtures in `tests/fixtures/` (each under 3 KB).
