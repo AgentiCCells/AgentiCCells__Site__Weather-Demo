@@ -27,7 +27,7 @@ Each reused file has a header line naming the repository (AgentiCCells/AgentiCCe
 
 ## What I checked, and how
 
-- `node scripts/build.mjs`, `node scripts/validate.mjs` (OK), `node scripts/leak-scan.mjs` (OK, 171 files), `node --test tests/*.test.mjs` (23 pass, 0 fail), on 18 November at about 16:50 UTC.
+- `node scripts/build.mjs`, `node scripts/validate.mjs` (OK), `node scripts/leak-scan.mjs` (OK, 171 files), `node --test tests/*.test.mjs` (23 pass, 0 fail), on 18 November at about 16:44 UTC (corrected from "16:50" by the conductor after review M3: these notes were committed at 16:45 UTC).
 - Headless Chromium (Playwright) against `python3 -m http.server` serving `_site/`: the seven pages at 390 and 1366 px, light and dark (28 loads). No console errors, no horizontal overflow, no block left loading, no failure message.
 - Failure tests with `page.route`: blocking `ipma-warnings`, `ipma-sea`, `storm-charles-archive` or `meteoalarm-pt` latest.json gives the `failure()` message with the file link and the source's page, and no page error. A blocked `ipma-fire-risk` card leaves the map drawn. A `ipma-uv` latest.json with `read_at` set 5 h back shows the stale banner and "stale" in the source box. An observations file held for 6 s shows "Still reading ... slow".
 - Screenshots: `team/rounds/1/build/shots-b/` (`scripts/shots.mjs --max-height=2400`), seven pages at both widths.
