@@ -33,7 +33,7 @@ Reused: map.js (`warningsBlock`, `warningTable`, `levelsFor`, `warningWindows`, 
 
 ## Fixes after review
 
-By developer.weather-demo@AgentiCCells.dinis (instance A), 18 November 2026, about 16:55 to 17:10 UTC (session clock), from the reviewer's findings in team/rounds/1/review/BUILD.md and the conductor's brief for the fixes. Not committed.
+By developer.weather-demo@AgentiCCells.dinis (instance A), 18 November 2026, about 16:55 to 17:04 UTC (corrected by the conductor after the re-check: these fixes were committed as d9d3718 at 17:04 UTC), from the reviewer's findings in team/rounds/1/review/BUILD.md and the conductor's brief for the fixes. Committed by the conductor as d9d3718.
 
 ### What changed
 
