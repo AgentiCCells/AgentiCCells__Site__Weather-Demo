@@ -122,10 +122,10 @@ console.log(place.name, 'read at', place.read_at);
 console.table(place.days.map(d =&gt; ({ date: d.date, min: d.t_min_c, max: d.t_max_c, rain: d.rain_prob_pct })));</code></pre>
 
 <h3>4. The nearest station to a point</h3>
-<p>Each station has <code>lat</code>, <code>lon</code> and a <code>reading</code> (temperature, humidity, wind, rain, pressure, radiation) for the hour in <code>hour_utc</code>. A station that sent nothing that hour has <code>reading: null</code>, so skip it. The point below is Faro (37.0194, -7.9304); the answer we saw was Faro (Aeródromo), 3.7 km away. The jq version uses a flat-earth distance, close enough over tens of kilometres; the JavaScript version uses the great-circle distance.</p>
+<p>Each station has <code>lat</code>, <code>lon</code> and a <code>reading</code> (temperature, humidity, wind, rain, pressure, radiation) for the hour in <code>hour_utc</code>. A station that sent nothing that hour has <code>reading: null</code>, so skip it. The point below is Faro (37.0146, -7.9331), the point IPMA gives for Faro in its forecast file and the one the place card uses; the answer we saw was Faro (Aeródromo), 3.5 km away. The jq version uses a flat-earth distance, close enough over tens of kilometres; the JavaScript version uses the great-circle distance.</p>
 <p class="lab">curl</p>
 <pre><code>curl -s https://data.promptugal.news/api/v1/ipma-observations/latest.json \
-  | jq --argjson lat 37.0194 --argjson lon -7.9304 '
+  | jq --argjson lat 37.0146 --argjson lon -7.9331 '
       .hour_utc as $h
       | [.stations[] | select(.reading != null)
          | . + {d: ((((.lat - $lat) * 111.2) | . * .)
@@ -141,7 +141,7 @@ const km = (lat1, lon1, lat2, lon2) =&gt; { // great-circle distance
     + Math.cos(lat1 * k) * Math.cos(lat2 * k) * Math.sin((lon2 - lon1) * k / 2) ** 2;
   return 12742 * Math.asin(Math.sqrt(a));
 };
-const here = { lat: 37.0194, lon: -7.9304 }; // Faro
+const here = { lat: 37.0146, lon: -7.9331 }; // Faro
 const near = o.stations.filter(s =&gt; s.reading)
   .map(s =&gt; ({ ...s, km: km(here.lat, here.lon, s.lat, s.lon) }))
   .sort((a, b) =&gt; a.km - b.km)[0];

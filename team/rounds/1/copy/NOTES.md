@@ -47,3 +47,10 @@ No third-party text is copied beyond short quotes, each attributed: Dinis's word
 4. **Staleness limits** (3 h stale, 24 h old) are stated as this site's choice, from src/assets/js/data.js. If the developer changes them, Use the data must follow.
 5. **Examples will drift**: the outputs quoted (32 warnings, Faro 3.7 km) are marked as what we saw on 18 November. The policy's G5 proposes a test that runs the examples; examples/ holds them as files for that.
 6. The MeteoAlarm card says its terms were read on 11 November and not re-read; the page says so.
+
+## Fixes after review
+
+Fixes for the reviewer's findings S3 and S5 (team/rounds/1/review/BUILD.md), made on 18 November 2026.
+
+- **S3, Faro's point.** The nearest-station examples on /use-the-data/ (curl with jq, and JavaScript) now use Faro at 37.0146, -7.9331, the place table's point (src/assets/js/places.js, from IPMA's forecast file), so they agree with the place card. The page and its index.md say where the point comes from. examples/curl-station.sh and examples/js-station.js changed to match. Both re-run exactly as printed (bash and Node 22): each exited 0 and printed Faro (Aeródromo), 3.5 km, hour 15:00Z (was 3.7 km from the old point). No other example used coordinates. The 3.7 km in the notes above is what the old point gave.
+- **S5, test command.** /how-it-was-made/ and its index.md now print `node --test tests/*.test.mjs` (25 pass, 0 fail), as scripts/release.sh runs it. `node --test tests/` exits 1. The other commands the page names, run as printed with `node`: scripts/build.mjs, scripts/validate.mjs, scripts/leak-scan.mjs, scripts/check-commits.mjs, scripts/role-scope.mjs and scripts/abp-check.mjs each exit 0 (check-commits and role-scope also with `origin/dev HEAD`, as release.sh gives them).

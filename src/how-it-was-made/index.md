@@ -58,7 +58,7 @@ A release stops at the first failure; a gate is fixed, never skipped or weakened
 - Check-commits (scripts/check-commits.mjs): every commit names its agent.
 - Role-scope (scripts/role-scope.mjs): every commit stays in its role's paths.
 - ABP check (scripts/abp-check.mjs): every policy in the team's format.
-- Tests (node --test tests/): code tables and staleness rules on saved samples.
+- Tests (`node --test tests/*.test.mjs`): code tables and staleness rules on saved samples.
 
 ## The budget and the stop rule
 

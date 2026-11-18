@@ -102,11 +102,11 @@ console.table(place.days.map(d => ({ date: d.date, min: d.t_min_c, max: d.t_max_
 
 ### 4. The nearest station to a point
 
-Skip stations whose `reading` is null (nothing sent that hour). For Faro (37.0194, -7.9304) we got Faro (Aeródromo), 3.7 km away.
+Skip stations whose `reading` is null (nothing sent that hour). For Faro (37.0146, -7.9331, IPMA's point in its forecast file, as on the place card) we got Faro (Aeródromo), 3.5 km away.
 
 ```sh
 curl -s https://data.promptugal.news/api/v1/ipma-observations/latest.json \
-  | jq --argjson lat 37.0194 --argjson lon -7.9304 '
+  | jq --argjson lat 37.0146 --argjson lon -7.9331 '
       .hour_utc as $h
       | [.stations[] | select(.reading != null)
          | . + {d: ((((.lat - $lat) * 111.2) | . * .)
@@ -124,7 +124,7 @@ const km = (lat1, lon1, lat2, lon2) => { // great-circle distance
     + Math.cos(lat1 * k) * Math.cos(lat2 * k) * Math.sin((lon2 - lon1) * k / 2) ** 2;
   return 12742 * Math.asin(Math.sqrt(a));
 };
-const here = { lat: 37.0194, lon: -7.9304 }; // Faro
+const here = { lat: 37.0146, lon: -7.9331 }; // Faro
 const near = o.stations.filter(s => s.reading)
   .map(s => ({ ...s, km: km(here.lat, here.lon, s.lat, s.lon) }))
   .sort((a, b) => a.km - b.km)[0];
